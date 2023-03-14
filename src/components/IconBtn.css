@@ -1,0 +1,16 @@
+.icon-btn {
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+    opacity: 0.5;
+    transform: scale(1.06);
+}

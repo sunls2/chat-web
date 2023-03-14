@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta
+            name="description"
+            content="Keep It Simple, Stupid."
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="ChatGPT">
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/apple-touch-icon.png"/>
+    <title>Keep It Simple, Stupid.</title>
+    <style>
+        .bottom-font {
+            font-size: .1em;
+            margin-bottom: .8vh;
+            color: gray;
+            opacity: .8;
+            animation: show 1s;
+            animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+        }
+
+        @keyframes show {
+            from {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div style="display: flex; flex-direction: column; align-items: center; height: 100%">
+    <div id="root" class="root"></div>
+    <div class="bottom-font">
+        <span>免翻墙，不折腾！</span>
+    </div>
+</div>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0TS9Z4ZP5S"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+        dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-0TS9Z4ZP5S');
+</script>
+</body>
+</html>
