@@ -1,16 +1,14 @@
-import "./App.css";
-import {ClearOutlined} from "@ant-design/icons";
-import {Button, Card, Empty, Input, message, notification, Popconfirm, Typography} from "antd";
-import React, {useEffect, useRef, useState} from "react";
-import axios from "axios";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from 'remark-gfm'
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import {atomOneLight} from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import "./App.css"
+import {ClearOutlined} from "@ant-design/icons"
+import {Button, Card, Empty, Input, message, notification, Popconfirm, Typography} from "antd"
+import React, {useEffect, useRef, useState} from "react"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import SyntaxHighlighter from "react-syntax-highlighter"
+import {atomOneLight} from "react-syntax-highlighter/dist/esm/styles/hljs"
+import {fetchEventSource} from "@microsoft/fetch-event-source"
 
 const Text = Typography
-
-axios.defaults.timeout = 60000;
 
 class chatAPI {
     static conversation = "/conversation"
@@ -19,17 +17,61 @@ class chatAPI {
     messageId
     controller
 
-    conversation(message) {
-        this.controller = new AbortController();
-        return axios.post(chatAPI.conversation, {
-            message,
-            ...(this.messageId && {parentMessageId: this.messageId}),
-            ...(this.conversationId && {conversationId: this.conversationId})
-        }, {signal: this.controller.signal}).then(({data}) => {
-            this.conversationId = data.conversationId
-            this.messageId = data.messageId
-            return data
-        })
+    async conversation(message, event) {
+        const opts = {
+            timeout: 60000,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                message,
+                stream: true,
+                ...(this.messageId && {parentMessageId: this.messageId}),
+                ...(this.conversationId && {conversationId: this.conversationId}),
+            }),
+        }
+
+        let reply = ""
+        this.controller = new AbortController()
+        try {
+            await fetchEventSource(chatAPI.conversation, {
+                ...opts,
+                signal: this.controller.signal,
+                onopen(response) {
+                    console.log("onopen:", response)
+                    if (response.status === 200) {
+                        event.onopen(response)
+                        return
+                    }
+                    throw new Error(`Failed to send message. HTTP ${response.status} - ${response.statusText}`)
+                },
+                onerror: err => {
+                    throw err
+                },
+                onclose() {
+                    throw new Error('Failed to send message. Server closed the connection unexpectedly.');
+                },
+                onmessage: message => {
+                    // { data: "Hello", event: "", id: "", retry: undefined }
+                    if (message.data === "[DONE]") {
+                        this.controller.abort()
+                        return
+                    }
+                    if (message.event === "result") {
+                        const result = JSON.parse(message.data)
+                        this.conversationId = result.conversationId
+                        this.messageId = result.messageId
+                        event.onmessage(result.response)
+                        return
+                    }
+                    reply += JSON.parse(message.data)
+                    event.onmessage(reply)
+                },
+            })
+        } catch (e) {
+            return Promise.reject(e)
+        }
     }
 
     clear() {
@@ -44,17 +86,17 @@ const api = new chatAPI()
 function App() {
     const [chatList, setChatList] = useState([])
 
-    const inputRef = useRef();
-    const bottomRef = useRef();
-    const mounted = useRef();
+    const inputRef = useRef()
+    const bottomRef = useRef()
+    const mounted = useRef()
 
-    const [messageApi, messageHolder] = message.useMessage();
-    const [notificationApi, notificationHolder] = notification.useNotification();
+    const [messageApi, messageHolder] = message.useMessage()
+    const [notificationApi, notificationHolder] = notification.useNotification()
 
-    const [inputText, setInputText] = useState("");
-    const [typing, setTyping] = useState(false);
+    const [inputText, setInputText] = useState("")
+    const [typing, setTyping] = useState(false)
 
-    const [scrollToView, setScrollToView] = useState(false);
+    const [scrollToView, setScrollToView] = useState(false)
     useEffect(() => {
         if (mounted.current) {
             // didUpdate
@@ -66,7 +108,7 @@ function App() {
             }
         } else {
             // mount
-            mounted.current = true;
+            mounted.current = true
             console.log("mount")
         }
     }, [scrollToView])
@@ -74,7 +116,7 @@ function App() {
     function onSend() {
         if (typing) {
             messageApi.warning("typing.")
-            return;
+            return
         }
         const inputValue = inputRef.current.input.value
         if (!inputValue.trim()) {
@@ -90,34 +132,63 @@ function App() {
         }])
         // loading
         setChatList(chatList => [...chatList, {loading: true}])
-        setInputText("");
+        setInputText("")
         setTyping(true)
-        api.conversation(inputValue)
-            .then(data => {
-                console.log("then:", data)
+        api.conversation(inputValue, {
+            onopen: response => {
                 setChatList(chatList => {
                     if (chatList.length === 0) {
                         return []
                     }
                     chatList[chatList.length - 1].loading && chatList.pop()
-                    return [...chatList, {content: data.response}]
+                    return [...chatList, {typing: true}]
                 })
-            })
-            .catch(e => {
-                console.log("catch:", e)
+            },
+            onmessage: (message) => {
+                setScrollToView(true)
                 setChatList(chatList => {
-                    if (chatList.length === 0) {
-                        return []
+                    if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
+                        return chatList
                     }
-                    chatList[chatList.length - 1].loading && chatList.pop()
-                    return [...chatList, {content: `❌ 哎呀出错啦！${e}`}]
+                    console.log(message)
+                    const last = chatList[chatList.length - 1]
+                    last.content = message
+                    return [...chatList.slice(0, -1), last]
                 })
+            }
+        }).then(() => {
+            setChatList(chatList => {
+                if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
+                    return chatList
+                }
+                const last = chatList[chatList.length - 1]
+                last.typing = false
+                return [...chatList.slice(0, -1), last]
             })
-            .finally(() => {
-                console.log("finally")
-                setScrollToView(true);
-                setTyping(false)
+        }).catch(err => {
+            console.log("catch:", err)
+            setChatList(chatList => {
+                if (chatList.length === 0) {
+                    return chatList
+                }
+                const last = chatList[chatList.length - 1]
+                if (!last.typing && !last.loading) {
+                    return chatList
+                }
+
+                last.loading = false
+                last.typing = false
+
+                const errText = `❌ 哎呀出错啦！\`${err}\``
+                last.content = last.content
+                    ? `${last.content}  ${errText}`
+                    : errText
+                return [...chatList.slice(0, -1), last]
             })
+        }).finally(() => {
+            console.log("finally")
+            setTyping(false)
+        })
     }
 
     function onClear() {
@@ -137,7 +208,7 @@ function App() {
         if (e.target.value === "\n") {
             return
         }
-        setInputText(e.target.value);
+        setInputText(e.target.value)
     }
 
     function onPressEnter() {
@@ -203,6 +274,8 @@ function App() {
                 flexFlow: "column nowrap",
                 overflowY: "auto",
                 padding: "0 24px",
+
+                borderTop: "3px solid #82E0AA",
             }}
         >
             {chatList.length === 0 ?
@@ -248,13 +321,13 @@ function App() {
                                     components={{
                                         code({inline, className, children, ...props}) {
                                             let lang = ""
-                                            const match = /language-(\w+)/.exec(className || '')
+                                            const match = /language-(\w+)/.exec(className || "")
                                             if (match) {
                                                 lang = match[1]
                                             }
                                             return !inline ? (
                                                 <SyntaxHighlighter
-                                                    children={String(children).replace(/\n$/, '')}
+                                                    children={String(children).replace(/\n$/, "")}
                                                     language={lang}
                                                     style={atomOneLight}
                                                     {...props}
@@ -278,7 +351,7 @@ function App() {
             {messageHolder}
             {notificationHolder}
         </Card>
-    );
+    )
 }
 
-export default App;
+export default App
