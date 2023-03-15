@@ -135,7 +135,7 @@ function App() {
         setInputText("")
         setTyping(true)
         api.conversation(inputValue, {
-            onopen: response => {
+            onopen: () => {
                 setChatList(chatList => {
                     if (chatList.length === 0) {
                         return []
@@ -167,6 +167,7 @@ function App() {
             })
         }).catch(err => {
             console.log("catch:", err)
+            setScrollToView(true)
             setChatList(chatList => {
                 if (chatList.length === 0) {
                     return chatList
@@ -344,6 +345,7 @@ function App() {
                                     {item.content}
                                 </ReactMarkdown>}
                         </Card>
+                        {item.typing ? <div className="gradient-loader"/> : null}
                     </div>
                 })}
             <div ref={bottomRef} style={{marginTop: "10px"}}>
