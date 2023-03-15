@@ -25,5 +25,5 @@ you_site {
     reverse_proxy /conversation localhost:3001
 }
 ```
-1. 将`npm build`后生成的所有文件(`build`文件夹下)放至`/var/www/chat/`下
+1. 将`npm i && npm run build`后生成的所有文件(`build`文件夹下)放至`/var/www/chat/`下
 2. 需要将你的 [node-chatgpt-api](https://github.com/waylaidwanderer/node-chatgpt-api) 服务配置好并启动在`3001`端口
