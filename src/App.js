@@ -12,6 +12,7 @@ const Text = Typography
 
 class chatAPI {
     static conversation = "/conversation"
+    static maxScrollWait = 5 // 优化滚动窗口的次数
 
     conversationId
     messageId
@@ -35,6 +36,7 @@ class chatAPI {
         console.debug("conversation:", opts.body)
         let reply = ""
         this.controller = new AbortController()
+        let scrollWait = 1
         try {
             await fetchEventSource(chatAPI.conversation, {
                 ...opts,
@@ -63,19 +65,20 @@ class chatAPI {
                         const result = JSON.parse(message.data)
                         this.conversationId = result.conversationId
                         this.messageId = result.messageId
-                        event.onmessage(result.response)
+                        event.onmessage(result.response, true)
                         return
                     }
                     if (message.event === "error") {
                         throw new Error(JSON.parse(message.data).error)
                     }
                     reply += JSON.parse(message.data)
-                    event.onmessage(reply)
+                    event.onmessage(reply, scrollWait % chatAPI.maxScrollWait === 0)
+                    scrollWait++
                 },
             })
-        } catch (e) {
+        } catch (err) {
             this.controller.abort()
-            return Promise.reject(e)
+            return Promise.reject(err)
         }
     }
 
@@ -105,7 +108,6 @@ function App() {
     useEffect(() => {
         if (mounted.current) {
             // didUpdate
-            console.debug("didUpdate")
             if (scrollToView) {
                 setScrollToView(false)
                 console.debug("scrollIntoView")
@@ -116,7 +118,7 @@ function App() {
             console.debug("mount")
             mounted.current = true
         }
-    }, [])
+    })
 
     function onSend() {
         if (typing) {
@@ -149,8 +151,10 @@ function App() {
                     return [...chatList, {typing: true}]
                 })
             },
-            onmessage: (message) => {
-                setScrollToView(true)
+            onmessage: (message, scroll) => {
+                if (scroll) {
+                    setScrollToView(true)
+                }
                 setChatList(chatList => {
                     if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
                         return chatList
