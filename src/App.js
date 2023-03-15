@@ -32,6 +32,7 @@ class chatAPI {
             }),
         }
 
+        console.debug("conversation:", opts.body)
         let reply = ""
         this.controller = new AbortController()
         try {
@@ -39,7 +40,7 @@ class chatAPI {
                 ...opts,
                 signal: this.controller.signal,
                 onopen(response) {
-                    console.log("onopen:", response)
+                    console.debug("onopen:", response)
                     if (response.status === 200) {
                         event.onopen(response)
                         return
@@ -65,11 +66,15 @@ class chatAPI {
                         event.onmessage(result.response)
                         return
                     }
+                    if (message.event === "error") {
+                        throw new Error(JSON.parse(message.data).error)
+                    }
                     reply += JSON.parse(message.data)
                     event.onmessage(reply)
                 },
             })
         } catch (e) {
+            this.controller.abort()
             return Promise.reject(e)
         }
     }
@@ -100,18 +105,18 @@ function App() {
     useEffect(() => {
         if (mounted.current) {
             // didUpdate
-            console.log("didUpdate")
+            console.debug("didUpdate")
             if (scrollToView) {
                 setScrollToView(false)
-                console.log("scrollIntoView")
+                console.debug("scrollIntoView")
                 bottomRef.current.scrollIntoView({behavior: "smooth"})
             }
         } else {
             // mount
+            console.debug("mount")
             mounted.current = true
-            console.log("mount")
         }
-    }, [scrollToView])
+    }, [])
 
     function onSend() {
         if (typing) {
@@ -150,7 +155,6 @@ function App() {
                     if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
                         return chatList
                     }
-                    console.log(message)
                     const last = chatList[chatList.length - 1]
                     last.content = message
                     return [...chatList.slice(0, -1), last]
@@ -166,7 +170,7 @@ function App() {
                 return [...chatList.slice(0, -1), last]
             })
         }).catch(err => {
-            console.log("catch:", err)
+            console.error("catch:", err)
             setScrollToView(true)
             setChatList(chatList => {
                 if (chatList.length === 0) {
@@ -187,7 +191,7 @@ function App() {
                 return [...chatList.slice(0, -1), last]
             })
         }).finally(() => {
-            console.log("finally")
+            console.debug("finally")
             setTyping(false)
         })
     }
