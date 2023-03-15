@@ -12,6 +12,7 @@ const Text = Typography
 
 class chatAPI {
     static conversation = "/conversation"
+    static maxScrollWait = 5 // 优化滚动窗口的次数
 
     conversationId
     messageId
@@ -32,14 +33,16 @@ class chatAPI {
             }),
         }
 
+        console.debug("conversation:", opts.body)
         let reply = ""
         this.controller = new AbortController()
+        let scrollWait = 1
         try {
             await fetchEventSource(chatAPI.conversation, {
                 ...opts,
                 signal: this.controller.signal,
                 onopen(response) {
-                    console.log("onopen:", response)
+                    console.debug("onopen:", response)
                     if (response.status === 200) {
                         event.onopen(response)
                         return
@@ -62,15 +65,20 @@ class chatAPI {
                         const result = JSON.parse(message.data)
                         this.conversationId = result.conversationId
                         this.messageId = result.messageId
-                        event.onmessage(result.response)
+                        event.onmessage(result.response, true)
                         return
                     }
+                    if (message.event === "error") {
+                        throw new Error(JSON.parse(message.data).error)
+                    }
                     reply += JSON.parse(message.data)
-                    event.onmessage(reply)
+                    event.onmessage(reply, scrollWait % chatAPI.maxScrollWait === 0)
+                    scrollWait++
                 },
             })
-        } catch (e) {
-            return Promise.reject(e)
+        } catch (err) {
+            this.controller.abort()
+            return Promise.reject(err)
         }
     }
 
@@ -100,18 +108,17 @@ function App() {
     useEffect(() => {
         if (mounted.current) {
             // didUpdate
-            console.log("didUpdate")
             if (scrollToView) {
                 setScrollToView(false)
-                console.log("scrollIntoView")
+                console.debug("scrollIntoView")
                 bottomRef.current.scrollIntoView({behavior: "smooth"})
             }
         } else {
             // mount
+            console.debug("mount")
             mounted.current = true
-            console.log("mount")
         }
-    }, [scrollToView])
+    })
 
     function onSend() {
         if (typing) {
@@ -144,13 +151,14 @@ function App() {
                     return [...chatList, {typing: true}]
                 })
             },
-            onmessage: (message) => {
-                setScrollToView(true)
+            onmessage: (message, scroll) => {
+                if (scroll) {
+                    setScrollToView(true)
+                }
                 setChatList(chatList => {
                     if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
                         return chatList
                     }
-                    console.log(message)
                     const last = chatList[chatList.length - 1]
                     last.content = message
                     return [...chatList.slice(0, -1), last]
@@ -166,7 +174,7 @@ function App() {
                 return [...chatList.slice(0, -1), last]
             })
         }).catch(err => {
-            console.log("catch:", err)
+            console.error("catch:", err)
             setScrollToView(true)
             setChatList(chatList => {
                 if (chatList.length === 0) {
@@ -187,7 +195,7 @@ function App() {
                 return [...chatList.slice(0, -1), last]
             })
         }).finally(() => {
-            console.log("finally")
+            console.debug("finally")
             setTyping(false)
         })
     }
