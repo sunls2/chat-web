@@ -14,6 +14,7 @@ class chatAPI {
     static conversation = "/conversation"
     static maxScrollWait = 5 // 优化滚动窗口的次数
 
+    jailbreakConversationId
     conversationId
     messageId
     controller
@@ -28,8 +29,12 @@ class chatAPI {
             body: JSON.stringify({
                 message,
                 stream: true,
+                jailbreakConversationId: this.jailbreakConversationId || true,
                 ...(this.messageId && {parentMessageId: this.messageId}),
                 ...(this.conversationId && {conversationId: this.conversationId}),
+                clientOptions: {
+                    clientToUse: "bing"
+                }
             }),
         }
 
@@ -64,8 +69,10 @@ class chatAPI {
                     if (message.event === "result") {
                         const result = JSON.parse(message.data)
                         this.conversationId = result.conversationId
+                        this.jailbreakConversationId = result.jailbreakConversationId
                         this.messageId = result.messageId
                         event.onmessage(result.response, true)
+                        console.debug("result:", result)
                         return
                     }
                     if (message.event === "error") {

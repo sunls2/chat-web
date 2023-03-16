@@ -25,11 +25,11 @@
 }
 
 .gradient-loader {
+    flex-shrink: 0;
     width: 20px;
     height: 20px;
     border-radius: 50%;
     background-image: conic-gradient(rgba(130, 224, 170, 0.2), rgb(130, 224, 170, 1));
-    position: relative;
     animation: turn-around 1s linear infinite;
     display: inline-block;
 }
