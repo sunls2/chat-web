@@ -15,19 +15,17 @@ import {ConfigKey, UseBing} from "./constant";
 const Text = Typography
 
 const defaultConfig = {
-    clientOptions: {
-        clientToUse: UseBing
-    }
+    clientToUse: UseBing,
+    jailbreak: false,
 }
 const api = new ChatAPI()
 
 function App() {
-    const [config, setConfig] = useState(null);
+    const [config, setConfig] = useState(JSON.parse(localStorage.getItem(ConfigKey)) || defaultConfig);
     const [chatList, setChatList] = useState([])
 
     const inputRef = useRef()
     const bottomRef = useRef()
-    const mounted = useRef()
 
     const [messageApi, messageHolder] = message.useMessage()
     const [notificationApi, notificationHolder] = notification.useNotification()
@@ -37,28 +35,25 @@ function App() {
 
     const [scrollToView, setScrollToView] = useState(false)
     useEffect(() => {
-        if (mounted.current) {
-            // didUpdate
-            if (scrollToView) {
-                setScrollToView(false)
-                console.debug("scrollIntoView")
-                bottomRef.current.scrollIntoView({behavior: "smooth"})
-            }
-        } else {
-            // mount
-            console.debug("mount")
-            mounted.current = true
-            // 加载配置
-            const configStr = localStorage.getItem(ConfigKey)
-            console.debug("load config:", configStr)
-            setConfig(JSON.parse(configStr) || defaultConfig)
-        }
-        return () => {
-            console.debug("umount")
-            console.debug("save config:", config)
-            localStorage.setItem(ConfigKey, JSON.stringify(config))
+        // didUpdate
+        if (scrollToView) {
+            setScrollToView(false)
+            console.debug("scrollIntoView")
+            bottomRef.current.scrollIntoView({behavior: "smooth"})
         }
     })
+
+    useEffect(() => {
+        console.debug("mount")
+        return () => {
+            console.debug("umount")
+            setConfig(config => {
+                console.debug("save config:", config)
+                localStorage.setItem(ConfigKey, JSON.stringify(config))
+                return config
+            })
+        }
+    }, [])
 
     function onSend() {
         if (typing) {
@@ -174,7 +169,11 @@ function App() {
 
     const [modalOpen, setModalOpen] = useState(false);
 
-    function settingClose() {
+    function settingsClose() {
+        setModalOpen(false)
+    }
+
+    function updateConfig(config) {
 
     }
 
@@ -313,7 +312,7 @@ function App() {
             </div>
             {messageHolder}
             {notificationHolder}
-            <Settings open={modalOpen}/>
+            <Settings open={modalOpen} settingsClose={settingsClose} config={config} updateConfig={updateConfig}/>
         </Card>
     )
 }
