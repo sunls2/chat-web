@@ -152,10 +152,16 @@ function App() {
             onopen: () => {
                 setChatList(chatList => {
                     if (chatList.length === 0) {
-                        return []
+                        return chatList
                     }
-                    chatList[chatList.length - 1].loading && chatList.pop()
-                    return [...chatList, {typing: true}]
+                    let last = chatList[chatList.length - 1]
+                    if (last.typing) {
+                        return chatList
+                    }
+                    if (last.loading) {
+                        last = {typing: true}
+                    }
+                    return [...chatList.slice(0, -1), last]
                 })
             },
             onmessage: (message, scroll) => {
