@@ -41,7 +41,12 @@
     }
 }
 
-.empty-image {
+.empty-img {
     width: 80px;
     opacity: 0.6;
+}
+
+.jailbreak-img {
+    width: 60px;
+    opacity: 0.8;
 }

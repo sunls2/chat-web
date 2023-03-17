@@ -17,6 +17,7 @@ const Text = Typography
 const defaultConfig = {
     clientToUse: UseChatGPT,
     jailbreak: false,
+    openaiApiKey: "",
 }
 const api = new ChatAPI()
 
@@ -187,8 +188,11 @@ function App() {
 
     return (<Card
             title={
-                <div style={{display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-between"}}>
+                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
                     <Text strong="true">{UseMap.get(config.clientToUse)}</Text>
+                    {config.clientToUse === UseBing && config.jailbreak ?
+                        <img className="jailbreak-img" src="img/jailbreak.png" alt="jailbreak"/> : null}
+                    <div style={{flexGrow: 1, visibility: "hidden"}}/>
                     <Button type="link" icon={<SettingOutlined/>} onClick={() => setModalOpen(true)}></Button>
                 </div>
             }
@@ -256,8 +260,8 @@ function App() {
                     alignItems: "center",
                     gap: "30px",
                 }}>
-                    <img className="empty-image"
-                         src={`${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
+                    <img className="empty-img"
+                         src={`img/${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
                     <Text>{config.clientToUse === UseBing ?
                         "BingAI aids info search and Q&A."
                         : "ChatGPT is a large language model trained by OpenAI."}
@@ -288,7 +292,7 @@ function App() {
                         >
                             {item.loading ?
                                 <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
-                                    <img src="loading.gif" alt="loading" style={{
+                                    <img src="img/loading.gif" alt="loading" style={{
                                         width: "150px",
                                         position: "relative",
                                         left: "-50px",
@@ -303,18 +307,16 @@ function App() {
                                             if (match) {
                                                 lang = match[1]
                                             }
-                                            return !inline ? (
+                                            return !inline ?
                                                 <SyntaxHighlighter
                                                     children={String(children).replace(/\n$/, "")}
                                                     language={lang}
                                                     style={atomOneLight}
                                                     {...props}
                                                 />
-                                            ) : (
-                                                <code className="inlineCode" {...props}>
+                                                : <code className="inlineCode" {...props}>
                                                     {children}
                                                 </code>
-                                            )
                                         }
                                     }}
                                     className="markdown"

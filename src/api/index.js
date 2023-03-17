@@ -35,7 +35,8 @@ export default class ChatAPI {
                 ...(useBing && this.clientId && {clientId: this.clientId}),
                 ...(useBing && this.invocationId && {invocationId: this.invocationId}),
                 clientOptions: {
-                    clientToUse: config.clientToUse
+                    clientToUse: config.clientToUse,
+                    ...(config.openaiApiKey && {openaiApiKey: config.openaiApiKey}),
                 }
             }),
         }
