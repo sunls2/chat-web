@@ -6,13 +6,17 @@ export default function Settings(props) {
     const [clientToUse, setClientToUse] = useState(props.config.clientToUse)
     const [jailbreak, setJailbreak] = useState(props.config.jailbreak);
 
+    function resetSettings() {
+        setClientToUse(props.config.clientToUse)
+        setJailbreak(props.config.jailbreak)
+    }
+
     function onOk() {
         props.settingsClose()
     }
 
     function onCancel() {
-        setClientToUse(props.config.clientToUse)
-        setJailbreak(props.config.jailbreak)
+        resetSettings()
         props.settingsClose()
     }
 
@@ -20,8 +24,8 @@ export default function Settings(props) {
         setClientToUse(value)
     }
 
-    function jailbreakChange(value) {
-        setJailbreak(value)
+    function jailbreakChange(e) {
+        setJailbreak(e.target.checked)
     }
 
     return (<Modal

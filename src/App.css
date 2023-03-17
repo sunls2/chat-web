@@ -25,9 +25,7 @@
 }
 
 .gradient-loader {
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
+    margin-top: 1px;
     border-radius: 50%;
     background-image: conic-gradient(rgba(130, 224, 170, 0.2), rgb(130, 224, 170, 1));
     animation: turn-around 1s linear infinite;

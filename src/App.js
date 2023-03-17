@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {atomOneLight} from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import ChatAPI from "./api/api";
+import ChatAPI from "./api";
 import Settings from "./components/Settings";
 import {ConfigKey, UseBing} from "./constant";
 
@@ -234,7 +234,7 @@ function App() {
                 display: "flex",
                 flexFlow: "column nowrap",
                 overflowY: "auto",
-                padding: "0 24px",
+                padding: "0 2%",
 
                 borderTop: "3px solid #82E0AA",
             }}
@@ -247,67 +247,71 @@ function App() {
                     justifyContent: "center",
                 }}/> :
                 chatList.map((item, i) => {
-                    const style = {
-                        marginTop: "10px",
-                        display: "flex",
-                        gap: "10px",
-                    }
-                    let emoji = "🤖"
-                    if (item.right) {
-                        style.justifyContent = "flex-end"
-                        emoji = "🧐"
-                    }
+                        const style = {
+                            marginTop: "10px",
+                            display: "flex",
+                            gap: "8px",
+                        }
+                        let emoji = "🤖"
+                        if (item.right) {
+                            style.justifyContent = "flex-end"
+                            emoji = "🧐"
+                        }
 
-                    return <div style={style} key={i}>
-                        <span style={{fontSize: "22px"}}>{emoji}</span>
-                        <Card
-                            style={{
-                                maxWidth: "666px",
-                                width: "fit-content",
-                            }}
-                            bodyStyle={{
-                                padding: "0 10px",
-                            }}
-                        >
-                            {item.loading ?
-                                <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
-                                    <img src="loading.gif" alt="loading" style={{
-                                        width: "150px",
-                                        position: "relative",
-                                        left: "-50px",
-                                        top: "-35px",
-                                    }}/>
-                                </div>
-                                : <ReactMarkdown
-                                    components={{
-                                        code({inline, className, children, ...props}) {
-                                            let lang = ""
-                                            const match = /language-(\w+)/.exec(className || "")
-                                            if (match) {
-                                                lang = match[1]
+                        return <div style={style} key={i}>
+                            <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
+                            <Card
+                                style={{
+                                    maxWidth: "666px",
+                                    width: "fit-content",
+                                }}
+                                bodyStyle={{
+                                    padding: "0 10px",
+                                }}
+                            >
+                                {item.loading ?
+                                    <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
+                                        <img src="loading.gif" alt="loading" style={{
+                                            width: "150px",
+                                            position: "relative",
+                                            left: "-50px",
+                                            top: "-35px",
+                                        }}/>
+                                    </div>
+                                    : <ReactMarkdown
+                                        components={{
+                                            code({inline, className, children, ...props}) {
+                                                let lang = ""
+                                                const match = /language-(\w+)/.exec(className || "")
+                                                if (match) {
+                                                    lang = match[1]
+                                                }
+                                                return !inline ? (
+                                                    <SyntaxHighlighter
+                                                        children={String(children).replace(/\n$/, "")}
+                                                        language={lang}
+                                                        style={atomOneLight}
+                                                        {...props}
+                                                    />
+                                                ) : (
+                                                    <code className="inlineCode" {...props}>
+                                                        {children}
+                                                    </code>
+                                                )
                                             }
-                                            return !inline ? (
-                                                <SyntaxHighlighter
-                                                    children={String(children).replace(/\n$/, "")}
-                                                    language={lang}
-                                                    style={atomOneLight}
-                                                    {...props}
-                                                />
-                                            ) : (
-                                                <code className="inlineCode" {...props}>
-                                                    {children}
-                                                </code>
-                                            )
-                                        }
-                                    }}
-                                    className="markdown"
-                                    remarkPlugins={[remarkGfm]}>
-                                    {item.content}
-                                </ReactMarkdown>}
-                        </Card>
-                        {item.typing ? <div className="gradient-loader"/> : null}
-                    </div>
-                })}
+                                        }}
+                                        className="markdown"
+                                        remarkPlugins={[remarkGfm]}>
+                                        {item.content}
+                                    </ReactMarkdown>}
+                            </Card>
+                            {item.right ? null :
+                                <div className={item.typing ? "gradient-loader" : ""}
+                                     style={{width: "20px", height: "20px", flexShrink: 0}}/>}
+
+                        </div>
+                    }
+                )}
             <div ref={bottomRef} style={{marginTop: "10px"}}>
             </div>
             {messageHolder}
