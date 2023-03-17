@@ -1,5 +1,12 @@
 import {Checkbox, Modal, Select, Typography} from "antd";
-import {UseBing, UseChatGPT, UseChatGPTBrowser} from "../constant";
+import {
+    UseBing,
+    UseBingLabel,
+    UseChatGPT,
+    UseChatGPTBrowser,
+    UseChatGPTBrowserLabel,
+    UseChatGPTLabel
+} from "../constant";
 import {useState} from "react";
 
 export default function Settings(props) {
@@ -39,7 +46,7 @@ export default function Settings(props) {
         onCancel={onCancel}
         onOk={onOk}>
         <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
-            <Typography.Text strong={true}>Client Use:</Typography.Text>
+            <Typography.Text strong={true}>Client:</Typography.Text>
             <Select
                 value={clientToUse}
                 style={{
@@ -47,9 +54,9 @@ export default function Settings(props) {
                 }}
                 onChange={selectChange}
                 options={[
-                    {value: UseChatGPT, label: "ChatGPT"},
-                    {value: UseChatGPTBrowser, label: "ChatGPTBrowser"},
-                    {value: UseBing, label: "Bing"},
+                    {value: UseChatGPT, label: UseChatGPTLabel},
+                    {value: UseChatGPTBrowser, label: UseChatGPTBrowserLabel},
+                    {value: UseBing, label: UseBingLabel},
                 ]}
             />
             {clientToUse === UseBing ?

@@ -10,7 +10,7 @@ import {atomOneLight} from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import ChatAPI from "./api";
 import Settings from "./components/Settings";
-import {ConfigKey, UseChatGPT} from "./constant";
+import {ConfigKey, UseBing, UseChatGPT, UseMap} from "./constant";
 
 const Text = Typography
 
@@ -47,13 +47,17 @@ function App() {
         console.debug("mount")
         return () => {
             console.debug("umount")
-            setConfig(config => {
-                console.debug("save config:", config)
-                localStorage.setItem(ConfigKey, JSON.stringify(config))
-                return config
-            })
+            saveConfig()
         }
     }, [])
+
+    function saveConfig() {
+        setConfig(config => {
+            console.debug("save config:", config)
+            localStorage.setItem(ConfigKey, JSON.stringify(config))
+            return config
+        })
+    }
 
     function onSend() {
         if (typing) {
@@ -176,6 +180,7 @@ function App() {
     function updateConfig(config, done) {
         // TODO 判断 重置对话的警告
         setConfig(config)
+        saveConfig()
         onClear()
         done()
     }
@@ -183,7 +188,7 @@ function App() {
     return (<Card
             title={
                 <div style={{display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-between"}}>
-                    <Text strong="true">ChatGPT</Text>
+                    <Text strong="true">{UseMap.get(config.clientToUse)}</Text>
                     <Button type="link" icon={<SettingOutlined/>} onClick={() => setModalOpen(true)}></Button>
                 </div>
             }
@@ -243,78 +248,87 @@ function App() {
             }}
         >
             {chatList.length === 0 ?
-                <Empty description="There is nothing." style={{
-                    flex: 1,
+                <div style={{
+                    flex: "1",
                     display: "flex",
-                    flexFlow: "column nowrap",
+                    flexFlow: "column",
                     justifyContent: "center",
-                }}/> :
-                chatList.map((item, i) => {
-                        const style = {
-                            marginTop: "10px",
-                            display: "flex",
-                            gap: "8px",
-                        }
-                        let emoji = "🤖"
-                        if (item.right) {
-                            style.justifyContent = "flex-end"
-                            emoji = "🧐"
-                        }
-
-                        return <div style={style} key={i}>
-                            <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
-                            <Card
-                                style={{
-                                    maxWidth: "666px",
-                                    width: "fit-content",
-                                }}
-                                bodyStyle={{
-                                    padding: "0 10px",
-                                }}
-                            >
-                                {item.loading ?
-                                    <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
-                                        <img src="loading.gif" alt="loading" style={{
-                                            width: "150px",
-                                            position: "relative",
-                                            left: "-50px",
-                                            top: "-35px",
-                                        }}/>
-                                    </div>
-                                    : <ReactMarkdown
-                                        components={{
-                                            code({inline, className, children, ...props}) {
-                                                let lang = ""
-                                                const match = /language-(\w+)/.exec(className || "")
-                                                if (match) {
-                                                    lang = match[1]
-                                                }
-                                                return !inline ? (
-                                                    <SyntaxHighlighter
-                                                        children={String(children).replace(/\n$/, "")}
-                                                        language={lang}
-                                                        style={atomOneLight}
-                                                        {...props}
-                                                    />
-                                                ) : (
-                                                    <code className="inlineCode" {...props}>
-                                                        {children}
-                                                    </code>
-                                                )
-                                            }
-                                        }}
-                                        className="markdown"
-                                        remarkPlugins={[remarkGfm]}>
-                                        {item.content}
-                                    </ReactMarkdown>}
-                            </Card>
-                            {item.right ? null :
-                                <div className={item.typing ? "gradient-loader" : ""}
-                                     style={{width: "20px", height: "20px", flexShrink: 0}}/>}
-
-                        </div>
+                    alignItems: "center",
+                    gap: "30px",
+                }}>
+                    <img className="empty-image"
+                         src={`${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
+                    <Text>{config.clientToUse === UseBing ?
+                        "BingAI aids info search and Q&A."
+                        : "ChatGPT is a large language model trained by OpenAI."}
+                    </Text>
+                </div>
+                : chatList.map((item, i) => {
+                    const style = {
+                        marginTop: "10px",
+                        display: "flex",
+                        gap: "8px",
                     }
-                )}
+                    let emoji = "🤖"
+                    if (item.right) {
+                        style.justifyContent = "flex-end"
+                        emoji = "🧐"
+                    }
+
+                    return <div style={style} key={i}>
+                        <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
+                        <Card
+                            style={{
+                                maxWidth: "85%",
+                                width: "fit-content",
+                            }}
+                            bodyStyle={{
+                                padding: "0 10px",
+                            }}
+                        >
+                            {item.loading ?
+                                <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
+                                    <img src="loading.gif" alt="loading" style={{
+                                        width: "150px",
+                                        position: "relative",
+                                        left: "-50px",
+                                        top: "-35px",
+                                    }}/>
+                                </div>
+                                : <ReactMarkdown
+                                    components={{
+                                        code({inline, className, children, ...props}) {
+                                            let lang = ""
+                                            const match = /language-(\w+)/.exec(className || "")
+                                            if (match) {
+                                                lang = match[1]
+                                            }
+                                            return !inline ? (
+                                                <SyntaxHighlighter
+                                                    children={String(children).replace(/\n$/, "")}
+                                                    language={lang}
+                                                    style={atomOneLight}
+                                                    {...props}
+                                                />
+                                            ) : (
+                                                <code className="inlineCode" {...props}>
+                                                    {children}
+                                                </code>
+                                            )
+                                        }
+                                    }}
+                                    className="markdown"
+                                    remarkPlugins={[remarkGfm]}>
+                                    {item.content}
+                                </ReactMarkdown>}
+                        </Card>
+                        {item.right ? null :
+                            <div className={item.typing ? "gradient-loader" : ""}
+                                 style={{width: "20px", height: "20px", flexShrink: 0}}/>}
+
+                    </div>
+                })
+            }
             <div ref={bottomRef} style={{marginTop: "10px"}}>
             </div>
             {messageHolder}

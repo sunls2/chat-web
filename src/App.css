@@ -40,3 +40,8 @@
         transform: rotate(360deg);
     }
 }
+
+.empty-image {
+    width: 80px;
+    opacity: 0.6;
+}
