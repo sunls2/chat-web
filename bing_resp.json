@@ -1,0 +1,132 @@
+{
+    "conversationId": "51D|BingProd|5242DA434A8D9F5B03495061DF6868813D1B0FB9F96730EA4213BF676EF3F550",
+    "conversationSignature": "5t2MzQ/ojc0BzS7LF7COuCfhFdS2/BlGcAySVTxwo1k=",
+    "clientId": "1055519658882159",
+    "invocationId": 2,
+    "conversationExpiryTime": "2023-03-17T15:34:57.8099823Z",
+    "response": "你想要什么样的链接？如果你没有特定的需求，我可以随机给你一个。比如，这是一首黄晓明演唱的歌曲《什么都可以》[^1^]，这是一篇教你如何用英文说“随便、都可以”的文章[^2^]，这是一个黄晓明《什么都可以》MV的视频网站[^3^] [^4^]。",
+    "details": {
+        "text": "你想要什么样的链接？如果你没有特定的需求，我可以随机给你一个。比如，这是一首黄晓明演唱的歌曲《什么都可以》[^1^]，这是一篇教你如何用英文说“随便、都可以”的文章[^2^]，这是一个黄晓明《什么都可以》MV的视频网站[^3^] [^4^]。",
+        "author": "bot",
+        "createdAt": "2023-03-17T09:34:37.5032774+00:00",
+        "timestamp": "2023-03-17T09:34:37.5032774+00:00",
+        "messageId": "0a19cef5-4f47-400b-8b9f-cf5c478b8a68",
+        "requestId": "e57e244c-dfa1-47c7-a821-1442d9b1b144",
+        "offense": "None",
+        "adaptiveCards": [
+            {
+                "type": "AdaptiveCard",
+                "version": "1.0",
+                "body": [
+                    {
+                        "type": "TextBlock",
+                        "text": "[1]: https://baike.baidu.com/item/%E4%BB%80%E4%B9%88%E9%83%BD%E5%8F%AF%E4%BB%A5/8038518 \"什么都可以（黄晓明演唱歌曲）_百度百科\"\n[2]: https://english.cool/anything-you-say/ \"「隨便！都可以！」英文怎麼說？（含例句） - 英文庫\"\n[3]: https://www.bilibili.com/video/BV1r4411Q7iy/ \"黄晓明 什么都可以 MV（内地版）_哔哩哔哩_bilibili\"\n[4]: https://www.youtube.com/watch?v=x2x_dUTzVgw \"什么都可以 - 黄晓明 - YouTube\"\n\n你想要什么样的链接？如果你没有特定的需求，我可以随机给你一个。比如，这是一首黄晓明演唱的歌曲《什么都可以》[^1^][1]，这是一篇教你如何用英文说“随便、都可以”的文章[^2^][2]，这是一个黄晓明《什么都可以》MV的视频网站[^3^][3] [^4^][4]。\n",
+                        "wrap": true
+                    },
+                    {
+                        "type": "TextBlock",
+                        "size": "small",
+                        "text": "Learn more: [1. baike.baidu.com](https://baike.baidu.com/item/%E4%BB%80%E4%B9%88%E9%83%BD%E5%8F%AF%E4%BB%A5/8038518) [2. english.cool](https://english.cool/anything-you-say/) [3. www.bilibili.com](https://www.bilibili.com/video/BV1r4411Q7iy/) [4. www.youtube.com](https://www.youtube.com/watch?v=x2x_dUTzVgw)",
+                        "wrap": true
+                    }
+                ]
+            }
+        ],
+        "sourceAttributions": [
+            {
+                "providerDisplayName": "什么都可以（黄晓明演唱歌曲）_百度百科",
+                "seeMoreUrl": "https://baike.baidu.com/item/%E4%BB%80%E4%B9%88%E9%83%BD%E5%8F%AF%E4%BB%A5/8038518",
+                "imageLink": "https://bing.com/th?id=OIP.cu7kIxTXpLVdqcmvBFyjFgHaHa&pid=cdx",
+                "imageWidth": "476",
+                "imageHeight": "476",
+                "imageFavicon": "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",
+                "searchQuery": "什么都可以"
+            },
+            {
+                "providerDisplayName": "「隨便！都可以！」英文怎麼說？（含例句） - 英文庫",
+                "seeMoreUrl": "https://english.cool/anything-you-say/",
+                "imageLink": "https://bing.com/th?id=OIP.ugZCdnpA4sEJgM18yr3o4wHaEK&pid=cdx",
+                "imageWidth": "1920",
+                "imageHeight": "1080",
+                "imageFavicon": "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARJSURBVFhHxVf7bxRVFPbfwQeioohG4w8aY1SkIsWWUDUFNUpMKiBIKSSUGJAQAUnABBNTrRDiA5QCPxQTKUlRKILlXSgvrQbZmc7M7s7szuPznDOP3e3MzlSpeJIvm3PvmXu/e8/jnr0j99wk/J+4JQLKi1OgzHkISuNU5GbcnWiThX9NQHl5GqyeHbAHj6J8oh/GB+8k2mWhlsDzd0GZPVUWz4K2rAWu8hdCsX7YA3Xuo4m2NaAby71wTzIBbdEclAcOwz77Syac368ArhtsD3gFA/aFwUTbGpweQGHrajlsjEB+Uztg28GS/52U+vYjN9O/hVoCmzsA5zYQ+HFv5IYUAh7si6dh7dsBa293fdB86dA+lI8cROnwAdJ3JtsFML/7HPqq18kFd2YQcBzkN7b7qfbS/XWhvTcX9pnjFBOXJQb09tcS7ULkGu6lvfzNMwjYFCydMPd0odRPp0sCndq5cp4uKwhGzyP9gown2vf3wvxqu2TDuAiYuz6BN5rz9QkS9+afGH3z2fERKHZ/DGfkKlAu1Yfr+PahsJ5kF8C5OgS19anxEchvWApt6TwY6xdLisaweQWs3m8q39DmVu+3Mp5kb6x7F9qSpigFMwkY69qgNExBcedWKiDHpIjUgILP/eO6+F6Eflnn8ZjtqaN+AZrhF6AQ2QSapksFmwjhAqRIFvxTAudO+GMsVH69Yl5KLwN2OZgIhPRwzisWKhlCwnUincCWVZkE7MGfYaxtg975NgwCF5aofFMMmN9/QeML/XmKHefSGX+OJJNAYftaOaEIE6CNxhLwNMX3MRHhp1iypDoGSOdxmSfXeXndnyPJJFDs3lJZjK7SWLMw7oJbkHQC9Dxy1QvFMwvQO1rjN2AV5Sl2rl8iDMuNVAvrPM7z7sg1eJz/gaQTaJhMr1RPYEoL6Sq0xU0xAuWTR6CvfkvI6R3zYe7+rBID9H6wrq+cL/PcJfGDFkoqAaXxQZR//SkwpVC4MSIlM3YDdCI3d0NKKkMyoUpYD+ekY6rKklQCauuTcH67HJjSYYbPQp332MTGQF8KAX35qzURWx7oo+fzASiz7pM3X/xOET4WfgwEgUsiMZBgx4crdm2Mdc8RgcK2NZLHoVg9X0Jd8LT0ifrKBTA+XBQH5bl1YFeldvBbQDqPx2zpHeBeQWtrhNL8yBgCMyfDOrjbX4SFFip2fSQNKp8oFZYZfOQL64l2AVx63s2vP41uQgiorzxBPj8XLEGLGBqdYgld23AwMrESa0o53TjtQrGHBjH6xjP+Hw9utYdO1QVnRHUMsJ5kF+H8SXF3TVuutjxOjeV+eCWLlvCovndJ16rMoj6OsqAumqdT37g8cgOnaH7TCvFxor3gYXE57xsRYPBHhW2dKB87BO39lsggC1rbbP8WKBBd9SY1HM2JdvUQERBQs8B/zcY2DWngNJUsocjndptTN8muHmoJ3HZMwt9M/b1xGU9z5wAAAABJRU5ErkJggg==",
+                "searchQuery": "什么都可以"
+            },
+            {
+                "providerDisplayName": "黄晓明 什么都可以 MV（内地版）_哔哩哔哩_bilibili",
+                "seeMoreUrl": "https://www.bilibili.com/video/BV1r4411Q7iy/",
+                "imageLink": "https://bing.com/th?id=OIP.h16V98TmNLwZHDbW8k7b8QHaEn&pid=cdx",
+                "imageWidth": "1374",
+                "imageHeight": "858",
+                "imageFavicon": "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGuSURBVFhH5ZaxTsMwEIY9INhgBfFE5SWQYAaehZGpDl0QO6ydEANDQYotUYkNUQlGGGAqd45dHP8OTtQ6QuKTTo3+O9/vulF94m8yHq8JqaQo1KuQ+kKMpps20x5ew2ulejO9uGdrCr1PMV+EVDedNmHMaY3fg3u2plAHweL2m4ibz8W5OrQVLbgs16NNWDt72rJVSJM5a9yzE781i22iaz3AOxyqYzr+W3p53qHRsmF6Um/2gNOQj7tUNIFF+WJiPA28m37Nq5D6XpxON+iNL4+iBb0EeZvfpZ64FiO9Ux3PCuGe3LvmRd50FF81MYe5o9qEv4FP/tfzBIrcgB8ImQE/EAKkGlC82BhYtZlUPfiBEMCNXI6fU6TqXc4FCgGpfEiqHvIgBKTyIal6yIMQ4B9poWdWbSZV/5OrAoWAQu2RPqPPZ/OcIlUPfiBkBvxAyAz4gZAZ8AMhM+DX52U0LLdrXjwl0Ztav46lvjKFq4YnIO7te5nr2MyBvthjsLcZi3g8ihVkDfVQjWTuePqcC/kLL4ZSBw+nUp1Q3FHBR3ThMsE9TW/ygLH8/yLEN50olbkkOCVHAAAAAElFTkSuQmCC",
+                "searchQuery": "什么都可以"
+            },
+            {
+                "providerDisplayName": "什么都可以 - 黄晓明 - YouTube",
+                "seeMoreUrl": "https://www.youtube.com/watch?v=x2x_dUTzVgw",
+                "imageLink": "https://bing.com/th?id=OIP.5hpCmeSm6q0jYmObE_G0ZwHaEK&pid=cdx",
+                "imageWidth": "1280",
+                "imageHeight": "720",
+                "imageFavicon": "iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANgSURBVFhH7dfda45xHMfxe7qZxzK2lseJYdoBmiaFPERknopilMQo7QDh0NKOSMrZhiTDPKVwwokDkhOEPBxoZcyz8Afg4/2579+95nZdbMstB3716nc9fH/f72/Xde26fnfif/tnmxKJPCTRE31R+C2RGBoMiZE679gwxmOdIy+k7VzzYBINRynGsV9BvwjVWINVMXzOMVVhzDg4x3DnDOmjGwG9MZLgGXCyLdiOHdiDRpwh5iz9qSjh3Bkcgsd4rHM4l3PORIlrhbLpxsF8jMcGNOEm7uAe7uMxnuF18CpG5rxjPcZjncO5nPMENjKBMvRKFWejJwfHogYX8ZFjygVyf8IltjfRl9InPYECdpbS+/K9c2AuuQbOsb0MBZ6A7/tWPMwE5Rq1nmAnxvj+l2M3nkYF5wK1/IzsRaUn4Kd+Pzo/gYICqbxcmjhRKi6OjvkFankCDVjgW7CMjaN4nh0Ya/Jkqa5OOnBAWrFCKiyMjotBrTacYHulr4BfHKfxOjsw1vz50tWrUkuL1NQkrVsnTZsmjR6dvjrJZPS4wLXg90V19ydw44b05YvU1iZdvy41Nko1NemrM2BA9Lgg1PJ/3RpPwG8ov8leZQfGmj1bunZNP7SXL6UjR6SqKmnw4OhxgWvBf/TqPzeBDx+k48elJUukQYOixwWuhfYJdP0WzJuXvuxfv0pv30q3b0vNzdK2bVJlpdS/f/S4INRqvwXdm8CVK1Jrq3ThglRbK82dK5WVpS9/Vx5CDmT+DV9kB8aqqJDq66WGBmn9eqmkJDouBrV++Dfs+ouoqCh9qadPl0aNknr0iI6LQa3Mi2ihJ9D1V3FeXrqo+6jzv0EtT2Afpnb8GD3KDswVavljtAulqc8x/Bycw9/4HL/HeSxnP/U5zixINuMSPnUc8Id9Jv/lUGss+8nUqoidfHbK6DfCy6ZbuIsHgZdXLXiBjkuvzFIs4w18vBW+zB7rZZlzOedJeOU1Afmp4pnGBHpzsAReOPrdUAsvGnyv6nCQmGP0zfB7I4pXOn7BHEY9PN4LU+eq5tws+p8XpdmNoH4YAS+rxzNgEv0cLMdqeILm7Y7WBosxBV7o+vY6V7+QvnONov5h4h8Wfkb60A+kL0b7D5AIw4Ii4rv/w+R/+3stkfgOMl+f65ycYzcAAAAASUVORK5CYII=",
+                "searchQuery": "什么都可以"
+            }
+        ],
+        "feedback": {
+            "tag": null,
+            "updatedOn": null,
+            "type": "None"
+        },
+        "contentOrigin": "DeepLeo",
+        "privacy": null,
+        "suggestedResponses": [
+            {
+                "text": "我想要一个关于科学的链接。",
+                "author": "user",
+                "createdAt": "2023-03-17T09:34:57.7472481+00:00",
+                "timestamp": "2023-03-17T09:34:57.7472481+00:00",
+                "messageId": "54682f83-0456-485f-80cf-f4e668aa0122",
+                "messageType": "Suggestion",
+                "offense": "Unknown",
+                "feedback": {
+                    "tag": null,
+                    "updatedOn": null,
+                    "type": "None"
+                },
+                "contentOrigin": "DeepLeo",
+                "privacy": null
+            },
+            {
+                "text": "我想听听那首歌。",
+                "author": "user",
+                "createdAt": "2023-03-17T09:34:57.747253+00:00",
+                "timestamp": "2023-03-17T09:34:57.747253+00:00",
+                "messageId": "1bfeeaf8-757d-417e-ad8c-428147af522a",
+                "messageType": "Suggestion",
+                "offense": "Unknown",
+                "feedback": {
+                    "tag": null,
+                    "updatedOn": null,
+                    "type": "None"
+                },
+                "contentOrigin": "DeepLeo",
+                "privacy": null
+            },
+            {
+                "text": "我想看看那个视频。",
+                "author": "user",
+                "createdAt": "2023-03-17T09:34:57.7472547+00:00",
+                "timestamp": "2023-03-17T09:34:57.7472547+00:00",
+                "messageId": "8a58fe36-eff9-42d6-889c-8a475896100b",
+                "messageType": "Suggestion",
+                "offense": "Unknown",
+                "feedback": {
+                    "tag": null,
+                    "updatedOn": null,
+                    "type": "None"
+                },
+                "contentOrigin": "DeepLeo",
+                "privacy": null
+            }
+        ],
+        "spokenText": "比如，这是一首黄晓明演唱的歌曲《什么都可以》，这是一篇教你如何用英文说“随便、都可以”的文章，这是一个黄晓明《什么都可以》MV的视频网站"
+    }
+}

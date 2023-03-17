@@ -10,12 +10,12 @@ import {atomOneLight} from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import ChatAPI from "./api";
 import Settings from "./components/Settings";
-import {ConfigKey, UseBing} from "./constant";
+import {ConfigKey, UseChatGPT} from "./constant";
 
 const Text = Typography
 
 const defaultConfig = {
-    clientToUse: UseBing,
+    clientToUse: UseChatGPT,
     jailbreak: false,
 }
 const api = new ChatAPI()
@@ -76,7 +76,7 @@ function App() {
         setChatList(chatList => [...chatList, {loading: true}])
         setInputText("")
         setTyping(true)
-        api.conversation(inputValue, {
+        api.conversation(inputValue, config, {
             onopen: () => {
                 setChatList(chatList => {
                     if (chatList.length === 0) {
@@ -173,8 +173,11 @@ function App() {
         setModalOpen(false)
     }
 
-    function updateConfig(config) {
-
+    function updateConfig(config, done) {
+        // TODO 判断 重置对话的警告
+        setConfig(config)
+        onClear()
+        done()
     }
 
     return (<Card

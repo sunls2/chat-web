@@ -1,16 +1,24 @@
 import {fetchEventSource} from "@microsoft/fetch-event-source";
+import {UseBing} from "../constant";
 
 export default class ChatAPI {
     static conversation = "/conversation"
     static maxScrollWait = 5 // 优化滚动窗口的次数
-    static timeout = 30000
+    static timeout = 60000
 
-    jailbreakConversationId
     conversationId
-    messageId
+    jailbreakConversationId
+    parentMessageId
+
+    // Bing Only
+    conversationSignature
+    clientId
+    invocationId
+
     controller
 
-    async conversation(message, event) {
+    async conversation(message, config, event) {
+        const useBing = config.clientToUse === UseBing
         const opts = {
             method: "POST",
             headers: {
@@ -19,11 +27,15 @@ export default class ChatAPI {
             body: JSON.stringify({
                 message,
                 stream: true,
-                jailbreakConversationId: this.jailbreakConversationId || true,
-                ...(this.messageId && {parentMessageId: this.messageId}),
                 ...(this.conversationId && {conversationId: this.conversationId}),
+                ...(useBing && config.jailbreak && {jailbreakConversationId: this.jailbreakConversationId || true}),
+                ...(this.parentMessageId && {parentMessageId: this.parentMessageId}),
+
+                ...(useBing && this.conversationSignature && {conversationSignature: this.conversationSignature}),
+                ...(useBing && this.clientId && {clientId: this.clientId}),
+                ...(useBing && this.invocationId && {invocationId: this.invocationId}),
                 clientOptions: {
-                    clientToUse: "bing"
+                    clientToUse: config.clientToUse
                 }
             }),
         }
@@ -67,11 +79,15 @@ export default class ChatAPI {
                         }
                         if (message.event === "result") {
                             const result = JSON.parse(message.data)
+                            console.debug("result:", result)
+                            event.onmessage(result.response, true)
+
                             this.conversationId = result.conversationId
                             this.jailbreakConversationId = result.jailbreakConversationId
-                            this.messageId = result.messageId
-                            event.onmessage(result.response, true)
-                            console.debug("result:", result)
+                            this.parentMessageId = result.messageId
+                            this.conversationSignature = result.conversationSignature
+                            this.clientId = result.clientId
+                            this.invocationId = result.invocationId
                             return
                         }
                         if (message.event === "error") {
@@ -95,6 +111,10 @@ export default class ChatAPI {
     clear() {
         this.controller?.abort()
         this.conversationId = null
-        this.messageId = null
+        this.jailbreakConversationId = null
+        this.parentMessageId = null
+        this.conversationSignature = null
+        this.clientId = null
+        this.invocationId = null
     }
 }

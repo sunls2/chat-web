@@ -1,6 +1,6 @@
 import {Checkbox, Modal, Select, Typography} from "antd";
 import {UseBing, UseChatGPT, UseChatGPTBrowser} from "../constant";
-import {useRef, useState} from "react";
+import {useState} from "react";
 
 export default function Settings(props) {
     const [clientToUse, setClientToUse] = useState(props.config.clientToUse)
@@ -12,7 +12,9 @@ export default function Settings(props) {
     }
 
     function onOk() {
-        props.settingsClose()
+        props.config.clientToUse = clientToUse
+        props.config.jailbreak = jailbreak
+        props.updateConfig(props.config, props.settingsClose)
     }
 
     function onCancel() {
