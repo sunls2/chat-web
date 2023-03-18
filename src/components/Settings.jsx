@@ -1,4 +1,4 @@
-import {Checkbox, Divider, Input, Modal, Select, Typography} from "antd";
+import {Alert, Checkbox, Divider, Input, Modal, Select, Typography} from "antd";
 import {
     UseBing,
     UseBingLabel,
@@ -23,10 +23,8 @@ export default function Settings(props) {
     }
 
     function onOk() {
-        props.config.clientToUse = clientToUse
-        props.config.jailbreak = jailbreak
-        props.config.openaiApiKey = apiKey
-        props.updateConfig(props.config, props.settingsClose)
+        props.updateConfig({...props.config, clientToUse, jailbreak, apiKey})
+        props.settingsClose()
     }
 
     function onCancel() {
@@ -87,7 +85,9 @@ export default function Settings(props) {
                         placeholder="sk-xxxxxxxxxxxxxx"/>
                 </div> : null
             }
+            <Alert style={{padding: "4px", width: "fit-content", fontSize: "10px"}}
+                   message="Switching client will reset the conversation." banner={true} type="warning"/>
+            <Divider style={{margin: "5px 0"}}/>
         </div>
-
     </Modal>)
 }

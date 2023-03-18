@@ -181,12 +181,13 @@ function App() {
         setModalOpen(false)
     }
 
-    function updateConfig(config, done) {
-        // TODO 判断 重置对话的警告
-        setConfig(config)
+    function updateConfig(newConfig) {
+        setConfig(newConfig)
         saveConfig()
-        onClear()
-        done()
+        if (config.clientToUse !== newConfig.clientToUse
+            || (config.clientToUse === UseBing && config.jailbreak !== newConfig.jailbreak)) {
+            onClear()
+        }
     }
 
     return (<Card
