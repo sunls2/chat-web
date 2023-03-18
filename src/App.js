@@ -203,7 +203,7 @@ function App() {
                 width: "95%",
                 maxWidth: "840px",
                 minWidth: "200px",
-                height: "95%",
+                height: "93%",
                 minHeight: "300px",
 
                 margin: "0 auto",
