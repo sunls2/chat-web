@@ -324,7 +324,7 @@ function App() {
                                         top: "-35px",
                                     }}/>
                                 </div>
-                                : <Markdown content={item.content}/>}
+                                : <Markdown success={messageApi.success} content={item.content}/>}
                         </Card>
                         <div
                             style={{
