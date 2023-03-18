@@ -31,6 +31,7 @@ function App() {
 
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
+    const [lastSend, setLastSend] = useState();
 
     const scrollRef = useRef(throttle(() => {
         console.debug("scrollIntoView")
@@ -72,6 +73,8 @@ function App() {
             messageApi.warning("There is nothing.")
             return
         }
+
+        setLastSend(inputValue)
 
         setScrollToView(true)
         // 用户发送的信息
@@ -150,6 +153,20 @@ function App() {
     function stopTyping() {
         api.controller?.abort()
         messageApi.success("Typing has stopped.")
+    }
+
+    function resend() {
+        console.debug("resend:", lastSend)
+        setChatList(chatList => {
+            if (chatList.length === 0 || !chatList[chatList.length - 1].failed) {
+                return chatList
+            }
+            const last = chatList[chatList.length - 1]
+            last.failed = false
+            return [...chatList.slice(0, -1), last]
+        })
+        setInputText(lastSend)
+        setTimeout(onSend, 0)
     }
 
     function onClear() {
@@ -309,9 +326,21 @@ function App() {
                                 </div>
                                 : <Markdown content={item.content}/>}
                         </Card>
-                        {item.right ? null :
-                            <div className={item.typing ? "gradient-loader" : ""}
-                                 style={{width: "20px", height: "20px", flexShrink: 0}}/>}
+                        <div
+                            style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {item.right ? null :
+                                <div className={item.typing ? "gradient-loader" : ""}
+                                     style={{width: "20px", height: "20px", flexShrink: 0}}/>}
+                            {item.failed ?
+                                <IconBtn style={{marginBottom: "2px"}} onClick={resend} src="icon/resend.png"
+                                         size="20px"/> : null}
+                        </div>
+
                     </div>
                 })
             }

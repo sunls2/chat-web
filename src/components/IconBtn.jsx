@@ -3,7 +3,7 @@ import React from 'react';
 import {Button} from "antd";
 
 function IconBtn(props) {
-    const sizeStyle = {width: props.size, height: props.size}
+    const sizeStyle = {width: props.size, height: props.size, ...props.style}
     return (
         <Button
             type="link"
