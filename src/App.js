@@ -3,15 +3,12 @@ import React, {useEffect, useRef, useState} from "react";
 import {ClearOutlined, SettingOutlined} from "@ant-design/icons";
 import {Button, Card, Input, message, notification, Popconfirm, Typography} from "antd";
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import {atomOneLight} from "react-syntax-highlighter/dist/esm/styles/hljs";
-
-import ChatAPI from "./api";
+import ChatAPI from "./api/ChatAPI";
 import Settings from "./components/Settings";
 import {ConfigKey, UseBing, UseChatGPT, UseMap} from "./constant";
 import {merge, throttle} from "lodash";
+import Markdown from "./components/Markdown";
+import IconBtn from "./components/IconBtn";
 
 const Text = Typography
 
@@ -135,10 +132,11 @@ function App() {
 
                 last.loading = false
                 last.typing = false
+                last.failed = true
 
-                const errText = `❌ 哎呀出错啦！\`${err}\``
+                const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob("YmljZWdvb2xsdXJnQG91dGxvb2suY29t")}\`*`
                 last.content = last.content
-                    ? `${last.content} \n${errText}`
+                    ? `${last.content}  \n${errText}`
                     : errText
                 return [...chatList.slice(0, -1), last]
             })
@@ -147,6 +145,11 @@ function App() {
             setScrollToView(true)
             setTyping(false)
         })
+    }
+
+    function stopTyping() {
+        api.controller?.abort()
+        messageApi.success("Typing has stopped.")
     }
 
     function onClear() {
@@ -242,6 +245,7 @@ function App() {
                         </Input>
                         <Button size="large" onClick={onSend} type={"primary"}>Send</Button>
                     </Input.Group>
+                    {typing ? <IconBtn onClick={stopTyping} src="icon/stop.svg" size="20px"/> : null}
                 </div>
             ]}
             bodyStyle={{
@@ -275,7 +279,7 @@ function App() {
                     const style = {
                         marginTop: "10px",
                         display: "flex",
-                        gap: "8px",
+                        gap: "5px",
                     }
                     let emoji = "🤖"
                     if (item.right) {
@@ -303,35 +307,11 @@ function App() {
                                         top: "-35px",
                                     }}/>
                                 </div>
-                                : <ReactMarkdown
-                                    components={{
-                                        code({inline, className, children, ...props}) {
-                                            let lang = ""
-                                            const match = /language-(\w+)/.exec(className || "")
-                                            if (match) {
-                                                lang = match[1]
-                                            }
-                                            return !inline ?
-                                                <SyntaxHighlighter
-                                                    children={String(children).replace(/\n$/, "")}
-                                                    language={lang}
-                                                    style={atomOneLight}
-                                                    {...props}
-                                                />
-                                                : <code className="inlineCode" {...props}>
-                                                    {children}
-                                                </code>
-                                        }
-                                    }}
-                                    className="markdown"
-                                    remarkPlugins={[remarkGfm]}>
-                                    {item.content}
-                                </ReactMarkdown>}
+                                : <Markdown content={item.content}/>}
                         </Card>
                         {item.right ? null :
                             <div className={item.typing ? "gradient-loader" : ""}
                                  style={{width: "20px", height: "20px", flexShrink: 0}}/>}
-
                     </div>
                 })
             }

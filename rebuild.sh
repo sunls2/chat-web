@@ -2,6 +2,9 @@
 
 set -e
 
-rm -rf build/*  && npm run build
+WEB_DIR=/var/www/chat
+[ -d ${WEB_DIR} ] || sudo mkdir -p ${WEB_DIR}
 
-sudo rm -rf /var/www/chat/* && sudo cp -r build/* /var/www/chat/
+rm -rf build/* && npm run build
+
+sudo rm -rf ${WEB_DIR}/* && sudo cp -r build/* ${WEB_DIR}/

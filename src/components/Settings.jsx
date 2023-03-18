@@ -1,10 +1,8 @@
-import {Alert, Checkbox, Divider, Input, Modal, Select, Typography} from "antd";
+import {Alert, Button, Checkbox, Divider, Input, Modal, Select, Typography} from "antd";
 import {
     UseBing,
     UseBingLabel,
-    UseChatGPT,
-    UseChatGPTBrowser,
-    UseChatGPTBrowserLabel,
+    UseChatGPT, UseChatGPTBrowser, UseChatGPTBrowserLabel,
     UseChatGPTLabel
 } from "../constant";
 import {useState} from "react";
@@ -70,6 +68,14 @@ export default function Settings(props) {
                 />
                 {clientToUse === UseBing ?
                     <Checkbox checked={jailbreak} onChange={jailbreakChange}>Jailbreak</Checkbox> : null}
+                {clientToUse === UseChatGPT ?
+                    <Button
+                        danger={true}
+                        type="dashed"
+                        href="https://shop.zzzo.eu.org"
+                        target="_blank"
+                        style={{padding:"4px 10px"}}
+                    >购买账号</Button> : null}
             </div>
             {clientToUse === UseChatGPT ?
                 <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
@@ -90,4 +96,4 @@ export default function Settings(props) {
             <Divider style={{margin: "5px 0"}}/>
         </div>
     </Modal>)
-}
+} 

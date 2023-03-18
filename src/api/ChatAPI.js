@@ -3,7 +3,6 @@ import {UseBing, UseChatGPT} from "../constant";
 
 export default class ChatAPI {
     static conversation = "/conversation"
-    static maxScrollWait = 5 // 优化滚动窗口的次数
     static timeout = 60000
 
     conversationId

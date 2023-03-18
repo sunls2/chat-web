@@ -8,22 +8,6 @@
     box-shadow: 0 0 5px rgba(0, 0, 0, .1);
 }
 
-.markdown p, .markdown pre {
-    margin: 10px 0;
-}
-
-.markdown {
-    word-wrap: break-word;
-}
-
-.inlineCode {
-    display: inline;
-    padding: 0 3px;
-    margin: 0 2px;
-    color: #3c3836;
-    background: #fbf1c7;
-}
-
 .gradient-loader {
     margin-top: 1px;
     border-radius: 50%;
