@@ -1,7 +1,7 @@
 import "./App.css";
 import React, {useEffect, useRef, useState} from "react";
 import {ClearOutlined, SettingOutlined} from "@ant-design/icons";
-import {Button, Card, Empty, Input, message, notification, Popconfirm, Typography} from "antd";
+import {Button, Card, Input, message, notification, Popconfirm, Typography} from "antd";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,6 +11,7 @@ import {atomOneLight} from "react-syntax-highlighter/dist/esm/styles/hljs";
 import ChatAPI from "./api";
 import Settings from "./components/Settings";
 import {ConfigKey, UseBing, UseChatGPT, UseMap} from "./constant";
+import {merge, throttle} from "lodash";
 
 const Text = Typography
 
@@ -22,7 +23,7 @@ const defaultConfig = {
 const api = new ChatAPI()
 
 function App() {
-    const [config, setConfig] = useState(JSON.parse(localStorage.getItem(ConfigKey)) || defaultConfig);
+    const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))));
     const [chatList, setChatList] = useState([])
 
     const inputRef = useRef()
@@ -34,13 +35,17 @@ function App() {
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
 
+    const scrollRef = useRef(throttle(() => {
+        console.debug("scrollIntoView")
+        bottomRef.current.scrollIntoView({behavior: "smooth"})
+    }, 500));
     const [scrollToView, setScrollToView] = useState(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         // didUpdate
         if (scrollToView) {
             setScrollToView(false)
-            console.debug("scrollIntoView")
-            bottomRef.current.scrollIntoView({behavior: "smooth"})
+            scrollRef.current()
         }
     })
 
@@ -97,14 +102,12 @@ function App() {
                     return [...chatList.slice(0, -1), last]
                 })
             },
-            onmessage: (message, scroll) => {
-                if (scroll) {
-                    setScrollToView(true)
-                }
+            onmessage: (message) => {
                 setChatList(chatList => {
                     if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
                         return chatList
                     }
+                    setScrollToView(true)
                     const last = chatList[chatList.length - 1]
                     last.content = message
                     return [...chatList.slice(0, -1), last]
@@ -121,7 +124,6 @@ function App() {
             })
         }).catch(err => {
             console.error("catch:", err)
-            setScrollToView(true)
             setChatList(chatList => {
                 if (chatList.length === 0) {
                     return chatList
@@ -136,12 +138,13 @@ function App() {
 
                 const errText = `❌ 哎呀出错啦！\`${err}\``
                 last.content = last.content
-                    ? `${last.content}  ${errText}`
+                    ? `${last.content} \n${errText}`
                     : errText
                 return [...chatList.slice(0, -1), last]
             })
         }).finally(() => {
             console.debug("finally")
+            setScrollToView(true)
             setTyping(false)
         })
     }

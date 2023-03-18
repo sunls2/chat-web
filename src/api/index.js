@@ -1,5 +1,5 @@
 import {fetchEventSource} from "@microsoft/fetch-event-source";
-import {UseBing} from "../constant";
+import {UseBing, UseChatGPT} from "../constant";
 
 export default class ChatAPI {
     static conversation = "/conversation"
@@ -36,7 +36,7 @@ export default class ChatAPI {
                 ...(useBing && this.invocationId && {invocationId: this.invocationId}),
                 clientOptions: {
                     clientToUse: config.clientToUse,
-                    ...(config.openaiApiKey && {openaiApiKey: config.openaiApiKey}),
+                    ...(config.clientToUse === UseChatGPT && config.openaiApiKey && {openaiApiKey: config.openaiApiKey}),
                 }
             }),
         }
@@ -44,7 +44,6 @@ export default class ChatAPI {
         console.debug("conversation:", opts.body)
         let reply
         let timer
-        let scrollWait = 1
         this.controller = new AbortController()
         const p1 = new Promise((_, reject) => {
             timer = setTimeout(() => {
@@ -95,8 +94,7 @@ export default class ChatAPI {
                             throw new Error(JSON.parse(message.data).error)
                         }
                         reply += JSON.parse(message.data)
-                        event.onmessage(reply, scrollWait % ChatAPI.maxScrollWait === 0)
-                        scrollWait++
+                        event.onmessage(reply)
                     },
                 })
             } catch (err) {

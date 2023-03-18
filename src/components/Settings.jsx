@@ -7,7 +7,7 @@ import {
     UseChatGPTBrowserLabel,
     UseChatGPTLabel
 } from "../constant";
-import {useRef, useState} from "react";
+import {useState} from "react";
 
 const {Text} = Typography
 
