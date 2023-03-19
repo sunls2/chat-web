@@ -1,9 +1,9 @@
 import {Alert, Button, Checkbox, Divider, Input, Modal, Select, Typography} from "antd";
 import {
+    ShopURL,
     UseBing,
     UseBingLabel,
-    UseChatGPT, UseChatGPTBrowser, UseChatGPTBrowserLabel,
-    UseChatGPTLabel
+    UseChatGPT, UseChatGPTLabel
 } from "../constant";
 import {useRef, useState} from "react";
 
@@ -67,7 +67,7 @@ export default function Settings(props) {
                     onChange={selectChange}
                     options={[
                         {value: UseChatGPT, label: UseChatGPTLabel},
-                        {value: UseChatGPTBrowser, label: UseChatGPTBrowserLabel},
+                        // {value: UseChatGPTBrowser, label: UseChatGPTBrowserLabel},
                         {value: UseBing, label: UseBingLabel},
                     ]}
                 />
@@ -77,7 +77,7 @@ export default function Settings(props) {
                     <Button
                         danger={true}
                         type="dashed"
-                        href="https://shop.zzzo.eu.org"
+                        href={ShopURL}
                         target="_blank"
                         style={{padding: "4px 10px"}}
                     >购买账号</Button> : null}

@@ -26,7 +26,7 @@ export default class ChatAPI {
             body: JSON.stringify({
                 message,
                 stream: true,
-                ...(this.conversationId && !config.jailbreak && {conversationId: this.conversationId}),
+                ...(this.conversationId && (!useBing || !config.jailbreak) && {conversationId: this.conversationId}),
                 ...(useBing && config.jailbreak && {jailbreakConversationId: this.jailbreakConversationId || true}),
                 ...(this.parentMessageId && {parentMessageId: this.parentMessageId}),
 

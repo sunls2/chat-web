@@ -10,3 +10,5 @@ export const UseMap = new Map()
 UseMap.set(UseBing, UseBingLabel)
 UseMap.set(UseChatGPT, UseChatGPTLabel)
 UseMap.set(UseChatGPTBrowser, UseChatGPTBrowserLabel)
+
+export const ShopURL = "https://shop.zzzo.eu.org"
