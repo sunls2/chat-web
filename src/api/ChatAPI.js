@@ -26,13 +26,13 @@ export default class ChatAPI {
             body: JSON.stringify({
                 message,
                 stream: true,
-                ...(this.conversationId && {conversationId: this.conversationId}),
+                ...(this.conversationId && !config.jailbreak && {conversationId: this.conversationId}),
                 ...(useBing && config.jailbreak && {jailbreakConversationId: this.jailbreakConversationId || true}),
                 ...(this.parentMessageId && {parentMessageId: this.parentMessageId}),
 
-                ...(useBing && this.conversationSignature && {conversationSignature: this.conversationSignature}),
-                ...(useBing && this.clientId && {clientId: this.clientId}),
-                ...(useBing && this.invocationId && {invocationId: this.invocationId}),
+                ...(useBing && !config.jailbreak && this.conversationSignature && {conversationSignature: this.conversationSignature}),
+                ...(useBing && !config.jailbreak && this.clientId && {clientId: this.clientId}),
+                ...(useBing && !config.jailbreak && this.invocationId && {invocationId: this.invocationId}),
                 clientOptions: {
                     clientToUse: config.clientToUse,
                     ...(config.clientToUse === UseChatGPT && config.openaiApiKey && {openaiApiKey: config.openaiApiKey}),
@@ -79,6 +79,12 @@ export default class ChatAPI {
                         if (message.event === "result") {
                             const result = JSON.parse(message.data)
                             console.debug("result:", result)
+                            if (useBing) {
+                                let urlList = result.details.sourceAttributions
+                                result.response = result.response.replace(/\[\^(.*?)\^]/g, (match, index) => {
+                                    return `[[${index}]](${urlList[index - 1].seeMoreUrl})`;
+                                })
+                            }
                             event.onmessage(result.response, true)
 
                             this.conversationId = result.conversationId

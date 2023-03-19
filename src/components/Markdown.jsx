@@ -26,8 +26,8 @@ function Markdown(props) {
                         <IconBtn
                             style={{
                                 position: "absolute",
-                                top: "5px",
-                                right: "5px",
+                                top: "8px",
+                                right: "8px",
                             }}
                             onClick={() => copyClick(children[0])}
                             size="20px" src="icon/copy.svg"></IconBtn>

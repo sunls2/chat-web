@@ -34,10 +34,7 @@ function App() {
     const [typing, setTyping] = useState(false)
     const [lastSend, setLastSend] = useState();
 
-    const scrollRef = useRef(throttle(() => {
-        console.debug("scrollIntoView")
-        bottomRef.current.scrollIntoView({behavior: "smooth"})
-    }, 500));
+    const scrollRef = useRef(throttle(() => bottomRef.current.scrollIntoView({behavior: "smooth"}), 450));
     const [scrollToView, setScrollToView] = useState(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
@@ -159,7 +156,7 @@ function App() {
                 return [...chatList.slice(0, -1), last]
             })
         }).finally(() => {
-            console.debug("finally")
+            console.debug("conversation finally")
             setScrollToView(true)
             setTyping(false)
         })
@@ -171,7 +168,6 @@ function App() {
     }
 
     function resend() {
-        console.debug("resend:", lastSend)
         if (!config.resendRetain) {
             setChatList(chatList => {
                 if (chatList.length === 0 || !chatList[chatList.length - 1].resend) {
