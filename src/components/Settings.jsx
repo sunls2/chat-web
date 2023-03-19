@@ -24,7 +24,8 @@ export default function Settings(props) {
 
     function onOk() {
         props.updateConfig({
-            ...props.config, clientToUse, jailbreak, apiKey,
+            ...props.config, clientToUse, jailbreak,
+            openaiApiKey: apiKey,
             resendRetain: resendRetainRef.current.state.checked,
         })
         props.settingsClose()
