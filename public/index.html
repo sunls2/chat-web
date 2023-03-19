@@ -15,12 +15,13 @@
     <title>Keep It Simple, Stupid.</title>
     <style>
         .bottom-font {
-            font-style: italic;
+            /*font-style: italic;*/
             color: gray;
             opacity: .8;
-            animation: show 2s;
+            animation: show 1s;
             animation-timing-function: cubic-bezier(0.55, 0.055, 0.675, 0.19);
         }
+
         @keyframes show {
             from {
                 opacity: 0;
@@ -32,9 +33,12 @@
 <noscript>You need to enable JavaScript to run this app.</noscript>
 <div style="display: flex; flex-direction: column; align-items: center; height: 100%">
     <div id="root" class="root"></div>
-    <div style="font-size: 5px; margin-bottom: 6px;" class="bottom-font">
-        <span id="busuanzi_container_site_pv">pv:<span id="busuanzi_value_site_pv"></span></span>
-        <span id="busuanzi_container_site_uv">uv:<span id="busuanzi_value_site_uv"></span></span>
+    <div style="font-size: 5px; margin-bottom: .8vh;" class="bottom-font">
+        <span>用爱发电不易，请多支持！</span>
+        <span style="font-size:1px">
+            <span id="busuanzi_container_site_pv">(pv:<span id="busuanzi_value_site_pv"></span></span>
+            <span id="busuanzi_container_site_uv">uv:<span id="busuanzi_value_site_uv"></span>)</span>
+        </span>
     </div>
 </div>
 <script async src="js/busuanzi.pure.mini.js"></script>
