@@ -6,7 +6,6 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import IconBtn from "./IconBtn";
-import {message} from "antd";
 
 function Markdown(props) {
     function copyClick(content) {

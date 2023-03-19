@@ -16,6 +16,7 @@ const defaultConfig = {
     clientToUse: UseChatGPT,
     jailbreak: false,
     openaiApiKey: "",
+    ResendRetain: false,
 }
 const api = new ChatAPI()
 
@@ -63,28 +64,37 @@ function App() {
         })
     }
 
-    function onSend() {
+    function onSend(resend) {
         if (typing) {
-            messageApi.warning("typing.")
+            messageApi.warning("Typing in progress.")
             return
         }
-        const inputValue = inputRef.current.input.value
+        const inputValue = resend || inputRef.current.input.value
         if (!inputValue.trim()) {
             messageApi.warning("There is nothing.")
             return
         }
 
-        setLastSend(inputValue)
-
         setScrollToView(true)
-        // 用户发送的信息
-        setChatList(chatList => [...chatList, {
-            content: inputValue,
-            right: true,
-        }])
+        if (!resend) {
+            setLastSend(inputValue)
+            setInputText("")
+            setChatList(chatList => {
+                if (chatList.length !== 0) {
+                    chatList[chatList.length - 1].resend = false
+                }
+                return [...chatList, {content: inputValue, right: true}]
+            })
+        }
+        if (config.ResendRetain && resend) {
+            setChatList(chatList => {
+                chatList[chatList.length - 1].resend = false
+                return [...chatList]
+            })
+        }
+
         // loading
         setChatList(chatList => [...chatList, {loading: true}])
-        setInputText("")
         setTyping(true)
         api.conversation(inputValue, config, {
             onopen: () => {
@@ -120,6 +130,7 @@ function App() {
                 }
                 const last = chatList[chatList.length - 1]
                 last.typing = false
+                last.resend = true
                 return [...chatList.slice(0, -1), last]
             })
         }).catch(err => {
@@ -135,7 +146,7 @@ function App() {
 
                 last.loading = false
                 last.typing = false
-                last.failed = true
+                last.resend = true
 
                 const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob("YmljZWdvb2xsdXJnQG91dGxvb2suY29t")}\`*`
                 last.content = last.content
@@ -157,16 +168,15 @@ function App() {
 
     function resend() {
         console.debug("resend:", lastSend)
-        setChatList(chatList => {
-            if (chatList.length === 0 || !chatList[chatList.length - 1].failed) {
-                return chatList
-            }
-            const last = chatList[chatList.length - 1]
-            last.failed = false
-            return [...chatList.slice(0, -1), last]
-        })
-        setInputText(lastSend)
-        setTimeout(onSend, 0)
+        if (!config.ResendRetain) {
+            setChatList(chatList => {
+                if (chatList.length === 0 || !chatList[chatList.length - 1].resend) {
+                    return chatList
+                }
+                return [...chatList.slice(0, -1)]
+            })
+        }
+        onSend(lastSend)
     }
 
     function onClear() {
@@ -336,7 +346,7 @@ function App() {
                             {item.right ? null :
                                 <div className={item.typing ? "gradient-loader" : ""}
                                      style={{width: "20px", height: "20px", flexShrink: 0}}/>}
-                            {item.failed ?
+                            {item.resend ?
                                 <IconBtn style={{marginBottom: "2px"}} onClick={resend} src="icon/resend.png"
                                          size="20px"/> : null}
                         </div>

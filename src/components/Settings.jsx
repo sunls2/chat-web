@@ -5,7 +5,7 @@ import {
     UseChatGPT, UseChatGPTBrowser, UseChatGPTBrowserLabel,
     UseChatGPTLabel
 } from "../constant";
-import {useState} from "react";
+import {useRef, useState} from "react";
 
 const {Text} = Typography
 
@@ -13,15 +13,20 @@ export default function Settings(props) {
     const [clientToUse, setClientToUse] = useState(props.config.clientToUse)
     const [jailbreak, setJailbreak] = useState(props.config.jailbreak);
     const [apiKey, setApiKey] = useState(props.config.openaiApiKey);
+    const resendRetainRef = useRef(null);
 
     function resetSettings() {
         setClientToUse(props.config.clientToUse)
         setJailbreak(props.config.jailbreak)
         setApiKey(props.config.openaiApiKey)
+        resendRetainRef.current.state.checked = props.config.ResendRetain
     }
 
     function onOk() {
-        props.updateConfig({...props.config, clientToUse, jailbreak, apiKey})
+        props.updateConfig({
+            ...props.config, clientToUse, jailbreak, apiKey,
+            ResendRetain: resendRetainRef.current.state.checked,
+        })
         props.settingsClose()
     }
 
@@ -74,7 +79,7 @@ export default function Settings(props) {
                         type="dashed"
                         href="https://shop.zzzo.eu.org"
                         target="_blank"
-                        style={{padding:"4px 10px"}}
+                        style={{padding: "4px 10px"}}
                     >购买账号</Button> : null}
             </div>
             {clientToUse === UseChatGPT ?
@@ -94,6 +99,7 @@ export default function Settings(props) {
             <Alert style={{padding: "4px", width: "fit-content", fontSize: "10px"}}
                    message="Switching client will reset the conversation." banner={true} type="warning"/>
             <Divider style={{margin: "5px 0"}}/>
+            <Checkbox ref={resendRetainRef}>Retain the content when resending.</Checkbox>
         </div>
     </Modal>)
 } 
