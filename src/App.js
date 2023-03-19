@@ -1,7 +1,7 @@
 import "./App.css";
 import React, {useEffect, useRef, useState} from "react";
 import {ClearOutlined, SettingOutlined} from "@ant-design/icons";
-import {Button, Card, Input, message, notification, Popconfirm, Typography} from "antd";
+import {Button, Card, Input, message, Popconfirm, Typography} from "antd";
 
 import ChatAPI from "./api/ChatAPI";
 import Settings from "./components/Settings";
@@ -28,7 +28,6 @@ function App() {
     const bottomRef = useRef(null)
 
     const [messageApi, messageHolder] = message.useMessage()
-    const [notificationApi, notificationHolder] = notification.useNotification()
 
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
@@ -185,7 +184,7 @@ function App() {
     function onClear() {
         api.clear()
         setChatList([])
-        notificationApi.success({message: "New conversation started."})
+        messageApi.success("New conversation started.")
     }
 
     // 记录是否正在输入，兼容中文输入的情况
@@ -360,7 +359,6 @@ function App() {
             <div ref={bottomRef} style={{marginTop: "10px"}}>
             </div>
             {messageHolder}
-            {notificationHolder}
             <Settings open={modalOpen} settingsClose={settingsClose} config={config} updateConfig={updateConfig}/>
         </Card>
     )
