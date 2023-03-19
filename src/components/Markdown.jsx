@@ -30,7 +30,7 @@ function Markdown(props) {
                                 right: "5px",
                             }}
                             onClick={() => copyClick(children[0])}
-                            size="20px" src="icon/copy.png"></IconBtn>
+                            size="20px" src="icon/copy.svg"></IconBtn>
                         <SyntaxHighlighter
                             children={String(children).replace(/\n$/, "")}
                             language={lang}

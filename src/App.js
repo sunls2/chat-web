@@ -16,7 +16,7 @@ const defaultConfig = {
     clientToUse: UseChatGPT,
     jailbreak: false,
     openaiApiKey: "",
-    ResendRetain: false,
+    resendRetain: false,
 }
 const api = new ChatAPI()
 
@@ -24,8 +24,8 @@ function App() {
     const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))));
     const [chatList, setChatList] = useState([])
 
-    const inputRef = useRef()
-    const bottomRef = useRef()
+    const inputRef = useRef(null)
+    const bottomRef = useRef(null)
 
     const [messageApi, messageHolder] = message.useMessage()
     const [notificationApi, notificationHolder] = notification.useNotification()
@@ -64,6 +64,10 @@ function App() {
         })
     }
 
+    function onSendClick() {
+        onSend()
+    }
+
     function onSend(resend) {
         if (typing) {
             messageApi.warning("Typing in progress.")
@@ -86,7 +90,7 @@ function App() {
                 return [...chatList, {content: inputValue, right: true}]
             })
         }
-        if (config.ResendRetain && resend) {
+        if (config.resendRetain && resend) {
             setChatList(chatList => {
                 chatList[chatList.length - 1].resend = false
                 return [...chatList]
@@ -168,7 +172,7 @@ function App() {
 
     function resend() {
         console.debug("resend:", lastSend)
-        if (!config.ResendRetain) {
+        if (!config.resendRetain) {
             setChatList(chatList => {
                 if (chatList.length === 0 || !chatList[chatList.length - 1].resend) {
                     return chatList
@@ -270,7 +274,7 @@ function App() {
                             style={{textAlign: "left"}}
                             placeholder="Ask me anything. 🙋‍♂️">
                         </Input>
-                        <Button size="large" onClick={onSend} type={"primary"}>Send</Button>
+                        <Button size="large" onClick={onSendClick} type={"primary"}>Send</Button>
                     </Input.Group>
                     {typing ? <IconBtn onClick={stopTyping} src="icon/stop.svg" size="20px"/> : null}
                 </div>

@@ -19,13 +19,13 @@ export default function Settings(props) {
         setClientToUse(props.config.clientToUse)
         setJailbreak(props.config.jailbreak)
         setApiKey(props.config.openaiApiKey)
-        resendRetainRef.current.state.checked = props.config.ResendRetain
+        resendRetainRef.current.state.checked = props.config.resendRetain
     }
 
     function onOk() {
         props.updateConfig({
             ...props.config, clientToUse, jailbreak, apiKey,
-            ResendRetain: resendRetainRef.current.state.checked,
+            resendRetain: resendRetainRef.current.state.checked,
         })
         props.settingsClose()
     }
