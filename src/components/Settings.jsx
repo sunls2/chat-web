@@ -5,11 +5,11 @@ import {
     UseBingLabel,
     UseChatGPT, UseChatGPTLabel
 } from "../constant";
-import {useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 
 const {Text} = Typography
 
-export default function Settings(props) {
+function Settings(props) {
     const [clientToUse, setClientToUse] = useState(props.config.clientToUse)
     const [jailbreak, setJailbreak] = useState(props.config.jailbreak);
     const [apiKey, setApiKey] = useState(props.config.openaiApiKey);
@@ -103,4 +103,6 @@ export default function Settings(props) {
             <Checkbox ref={resendRetainRef}>Retain the content when resending.</Checkbox>
         </div>
     </Modal>)
-} 
+}
+
+export default React.memo(Settings)

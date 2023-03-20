@@ -17,4 +17,4 @@ function IconBtn(props) {
     );
 }
 
-export default IconBtn;
+export default React.memo(IconBtn);

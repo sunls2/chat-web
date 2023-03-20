@@ -49,4 +49,4 @@ function Markdown(props) {
     </ReactMarkdown>);
 }
 
-export default Markdown;
+export default React.memo(Markdown);

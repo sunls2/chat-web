@@ -1,14 +1,16 @@
 import "./App.css";
 import React, {useEffect, useRef, useState} from "react";
-import {ClearOutlined, SettingOutlined} from "@ant-design/icons";
-import {Button, Card, Input, message, Popconfirm, Typography} from "antd";
+import {Button, Card, Input, message, Typography} from "antd";
 
 import ChatAPI from "./api/ChatAPI";
 import Settings from "./components/Settings";
-import {ConfigKey, ShopURL, UseBing, UseChatGPT, UseMap} from "./constant";
+import {ConfigKey, ShopURL, UseBing, UseChatGPT} from "./constant";
 import {merge, throttle} from "lodash";
 import Markdown from "./components/Markdown";
 import IconBtn from "./components/IconBtn";
+import Title from "./components/Title";
+import Clear from "./components/Clear";
+import Loading from "./components/Loading";
 
 const Text = Typography
 
@@ -230,15 +232,7 @@ function App() {
     }
 
     return (<Card
-            title={
-                <div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
-                    <Text strong="true">{UseMap.get(config.clientToUse)}</Text>
-                    {config.clientToUse === UseBing && config.jailbreak ?
-                        <img className="jailbreak-img" src="img/jailbreak.png" alt="jailbreak"/> : null}
-                    <div style={{flexGrow: 1, visibility: "hidden"}}/>
-                    <Button type="link" icon={<SettingOutlined/>} onClick={() => setModalOpen(true)}></Button>
-                </div>
-            }
+            title={<Title config setModalOpen/>}
             style={{
                 width: "96vw",
                 maxWidth: "840px",
@@ -257,14 +251,7 @@ function App() {
                     gap: "10px",
                     margin: "0 10px",
                 }}>
-                    <Popconfirm
-                        title="Reset this conversation?"
-                        onConfirm={onClear}
-                        okText="Yes"
-                        cancelText="No"
-                    >
-                        <Button shape="round" icon={<ClearOutlined/>}/>
-                    </Popconfirm>
+                    <Clear onClear/>
                     <Input.Group compact style={{display: "flex"}}>
                         <Input
                             ref={inputRef}
@@ -335,14 +322,7 @@ function App() {
                             }}
                         >
                             {item.loading ?
-                                <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
-                                    <img src="img/loading.gif" alt="loading" style={{
-                                        width: "150px",
-                                        position: "relative",
-                                        left: "-50px",
-                                        top: "-35px",
-                                    }}/>
-                                </div>
+                                <Loading/>
                                 : <Markdown success={messageApi.success} content={item.content}/>}
                         </Card>
                         <div
