@@ -1,0 +1,9 @@
+.icon-btn {
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.icon-btn:hover {
+    opacity: 0.6;
+    transform: scale(1.1);
+}

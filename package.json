@@ -6,6 +6,7 @@
     "@ant-design/icons": "^5.0.1",
     "@microsoft/fetch-event-source": "^2.0.1",
     "antd": "^5.2.1",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.5",
@@ -37,5 +38,5 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://43.139.144.182:3001"
+  "proxy": "http://ai.sunls.eu.org"
 }

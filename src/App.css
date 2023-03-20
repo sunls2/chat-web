@@ -2,34 +2,18 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex: 1;
+    overflow: auto;
 }
 
 .ant-card {
     box-shadow: 0 0 5px rgba(0, 0, 0, .1);
 }
 
-.markdown p, .markdown pre {
-    margin: 10px 0;
-}
-
-.markdown {
-    word-wrap: break-word;
-}
-
-.inlineCode {
-    display: inline;
-    padding: 0 3px;
-    margin: 0 2px;
-    color: #3c3836;
-    background: #fbf1c7;
-}
-
 .gradient-loader {
-    width: 20px;
-    height: 20px;
+    margin-top: 1px;
     border-radius: 50%;
     background-image: conic-gradient(rgba(130, 224, 170, 0.2), rgb(130, 224, 170, 1));
-    position: relative;
     animation: turn-around 1s linear infinite;
     display: inline-block;
 }
@@ -41,4 +25,14 @@
     100% {
         transform: rotate(360deg);
     }
+}
+
+.empty-img {
+    width: 80px;
+    opacity: 0.6;
+}
+
+.jailbreak-img {
+    width: 60px;
+    opacity: 0.8;
 }
