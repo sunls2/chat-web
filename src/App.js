@@ -64,6 +64,21 @@ function App() {
         onSend()
     }
 
+    // then 和 catch 中共用的检查逻辑
+    function checkLastChat(chatList) {
+        if (chatList.length === 0) {
+            return null
+        }
+        const last = chatList[chatList.length - 1]
+        if (!last.typing && !last.loading) {
+            return null
+        }
+        last.loading = false
+        last.typing = false
+        last.resend = true
+        return last
+    }
+
     function onSend(resend) {
         if (typing) {
             messageApi.warning("Typing in progress.")
@@ -125,31 +140,23 @@ function App() {
             }
         }).then(() => {
             setChatList(chatList => {
-                if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
+                const last = checkLastChat(chatList)
+                if (!last) {
                     return chatList
                 }
-                const last = chatList[chatList.length - 1]
-                last.typing = false
-                last.resend = true
+
                 if (config.clientToUse === UseChatGPT && !config.openaiApiKey) {
-                    last.content = `${last.content}\n___\n*默认有\`max_tokens=100\`限制，[购买账号](${ShopURL})可无限制使用*`
+                    last.content = `${last.content}\n___\n*默认有\`max_tokens=${ChatAPI.limitTokens}\`限制，[购买账号](${ShopURL})可无限制使用*`
                 }
                 return [...chatList.slice(0, -1), last]
             })
         }).catch(err => {
             console.error("catch:", err)
             setChatList(chatList => {
-                if (chatList.length === 0) {
+                const last = checkLastChat(chatList)
+                if (!last) {
                     return chatList
                 }
-                const last = chatList[chatList.length - 1]
-                if (!last.typing && !last.loading) {
-                    return chatList
-                }
-
-                last.loading = false
-                last.typing = false
-                last.resend = true
 
                 const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob("YmljZWdvb2xsdXJnQG91dGxvb2suY29t")}\`*`
                 last.content = last.content

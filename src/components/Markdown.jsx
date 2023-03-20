@@ -2,7 +2,6 @@ import "./Markdown.css"
 import React from 'react';
 import SyntaxHighlighter from "react-syntax-highlighter";
 import {atomOneLight} from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import rehypeRaw from 'rehype-raw';
 import remarkGfm from "remark-gfm";
 import ReactMarkdown from "react-markdown";
 import IconBtn from "./IconBtn";
@@ -45,7 +44,6 @@ function Markdown(props) {
         }}
         linkTarget="_blank"
         className="markdown"
-        rehypePlugins={[rehypeRaw]}
         remarkPlugins={[remarkGfm]}>
         {props.content}
     </ReactMarkdown>);

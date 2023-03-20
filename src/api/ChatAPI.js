@@ -4,6 +4,8 @@ import {UseBing, UseChatGPT} from "../constant";
 export default class ChatAPI {
     static conversation = "/conversation"
     static timeout = 60000
+    static maxTokens = 2048
+    static limitTokens = 100
 
     conversationId
     jailbreakConversationId
@@ -18,6 +20,8 @@ export default class ChatAPI {
 
     async conversation(message, config, event) {
         const useBing = config.clientToUse === UseBing
+        const useChatGPT = config.clientToUse === UseChatGPT
+        const customKey = useChatGPT && config.openaiApiKey
         const opts = {
             method: "POST",
             headers: {
@@ -35,7 +39,8 @@ export default class ChatAPI {
                 ...(useBing && !config.jailbreak && this.invocationId && {invocationId: this.invocationId}),
                 clientOptions: {
                     clientToUse: config.clientToUse,
-                    ...(config.clientToUse === UseChatGPT && config.openaiApiKey && {openaiApiKey: config.openaiApiKey}),
+                    ...(customKey && {openaiApiKey: config.openaiApiKey}),
+                    ...(useChatGPT && {modelOptions: {max_tokens: config.openaiApiKey ? ChatAPI.maxTokens : ChatAPI.limitTokens}}),
                 }
             }),
         }
