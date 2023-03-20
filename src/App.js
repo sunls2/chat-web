@@ -232,7 +232,7 @@ function App() {
     }
 
     return (<Card
-            title={<Title config setModalOpen/>}
+            title={<Title {...{config, setModalOpen}}/>}
             style={{
                 width: "96vw",
                 maxWidth: "840px",
@@ -251,7 +251,7 @@ function App() {
                     gap: "10px",
                     margin: "0 10px",
                 }}>
-                    <Clear onClear/>
+                    <Clear {...{onClear}}/>
                     <Input.Group compact style={{display: "flex"}}>
                         <Input
                             ref={inputRef}
