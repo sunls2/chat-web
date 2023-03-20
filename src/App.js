@@ -238,7 +238,6 @@ function App() {
                 maxWidth: "840px",
                 minWidth: "200px",
                 height: "100%",
-                minHeight: "300px",
 
                 margin: "1vh auto",
                 display: "flex",
