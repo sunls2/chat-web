@@ -4,7 +4,7 @@ import {Button, Card, Input, message, Typography} from "antd";
 
 import ChatAPI from "./api/ChatAPI";
 import Settings from "./components/Settings";
-import {ConfigKey, ShopURL, UseBing, UseChatGPT} from "./constant";
+import {ConfigKey, HelpEmail, ShopURL, UseBing, UseChatGPT} from "./constant";
 import {merge, throttle} from "lodash";
 import Markdown from "./components/Markdown";
 import IconBtn from "./components/IconBtn";
@@ -160,7 +160,7 @@ function App() {
                     return chatList
                 }
 
-                const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob("YmljZWdvb2xsdXJnQG91dGxvb2suY29t")}\`*`
+                const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob(HelpEmail)}\`*`
                 last.content = last.content
                     ? `${last.content}\n\n${errText}`
                     : errText

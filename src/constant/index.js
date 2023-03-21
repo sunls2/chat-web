@@ -11,4 +11,5 @@ UseMap.set(UseBing, UseBingLabel)
 UseMap.set(UseChatGPT, UseChatGPTLabel)
 UseMap.set(UseChatGPTBrowser, UseChatGPTBrowserLabel)
 
-export const ShopURL = "https://shop.zzzo.eu.org"
+export const ShopURL = "https://shop.sunls.me"
+export const HelpEmail = "bGl1c3MuenlAb3V0bG9vay5jb20="
