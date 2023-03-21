@@ -237,9 +237,9 @@ function App() {
                 width: "96vw",
                 maxWidth: "840px",
                 minWidth: "200px",
-                height: "100%",
+                height: "98%",
 
-                margin: "1vh auto",
+                margin: "0 auto",
                 display: "flex",
                 flexDirection: "column",
             }}
