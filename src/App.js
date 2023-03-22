@@ -86,7 +86,7 @@ function App() {
             messageApi.warning("Typing in progress.")
             return
         }
-        const inputValue = resend || inputRef.current.input.value
+        const inputValue = resend || inputRef.current.resizableTextArea.textArea.value
         if (!inputValue.trim()) {
             messageApi.warning("There is nothing.")
             return
@@ -252,19 +252,19 @@ function App() {
                 }}>
                     <Clear {...{onClear}}/>
                     <Input.Group compact style={{display: "flex"}}>
-                        <Input
+                        <Input.TextArea
                             ref={inputRef}
-                            showCount
                             size="large"
                             maxLength={2000}
                             value={inputText}
+                            autoSize={{maxRows: 1}}
                             onPressEnter={onPressEnter}
                             onCompositionStart={handleComposition}
                             onCompositionEnd={handleComposition}
                             onChange={inputChange}
                             style={{textAlign: "left"}}
                             placeholder="Ask me anything. 🙋‍♂️">
-                        </Input>
+                        </Input.TextArea>
                         <Button size="large" onClick={onSendClick} type={"primary"}>Send</Button>
                     </Input.Group>
                     {typing ? <IconBtn onClick={stopTyping} src="icon/stop.svg" size="20px"/> : null}
