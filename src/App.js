@@ -81,18 +81,19 @@ function App() {
         return last
     }
 
-    function onSend(resend) {
+    function onSend({resend, e} = {}) {
         if (typing) {
             messageApi.warning("Typing in progress.")
+            e?.preventDefault()
             return
         }
         const inputValue = resend || inputRef.current.resizableTextArea.textArea.value
         if (!inputValue.trim()) {
             messageApi.warning("There is nothing.")
+            e?.preventDefault()
             return
         }
 
-        setScrollToView(true)
         if (!resend) {
             setLastSend(inputValue)
             setInputText("")
@@ -113,6 +114,8 @@ function App() {
         // loading
         setChatList(chatList => [...chatList, {loading: true}])
         setTyping(true)
+        // TODO: 不知道为什么Input换成TextArea后发送消息就无法立即滚动到最新了，这里先做个延时解决
+        setTimeout(() => setScrollToView(true), 100)
         api.conversation(inputValue, config, {
             onopen: () => {
                 setChatList(chatList => {
@@ -187,7 +190,7 @@ function App() {
                 return [...chatList.slice(0, -1)]
             })
         }
-        onSend(lastSend)
+        onSend({resend: lastSend})
     }
 
     function onClear() {
@@ -210,9 +213,15 @@ function App() {
         setInputText(e.target.value)
     }
 
-    function onPressEnter() {
+    function onPressEnter(e) {
+        if (e.shiftKey) {
+            e.preventDefault();
+            setInputText(e.target.value + "\n")
+            setTimeout(() => e.target.scrollTop = e.target.scrollHeight, 0)
+            return
+        }
         if (!isComposition) {
-            onSend()
+            onSend({e})
         }
     }
 
@@ -257,6 +266,7 @@ function App() {
                             size="large"
                             maxLength={2000}
                             value={inputText}
+                            autoFocus
                             autoSize={{maxRows: 1}}
                             onPressEnter={onPressEnter}
                             onCompositionStart={handleComposition}

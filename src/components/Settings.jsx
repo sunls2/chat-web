@@ -25,7 +25,7 @@ function Settings(props) {
     function onOk() {
         props.updateConfig({
             ...props.config, clientToUse, jailbreak,
-            openaiApiKey: apiKey,
+            openaiApiKey: apiKey.trim(),
             resendRetain: resendRetainRef.current.state.checked,
         })
         props.settingsClose()
