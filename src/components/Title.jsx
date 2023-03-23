@@ -1,3 +1,4 @@
+import "./Title.css"
 import React from "react"
 import {UseBing, UseMap} from "../constant"
 import {Button, Typography} from "antd"
@@ -12,7 +13,9 @@ function Title(props) {
             {props.config.clientToUse === UseBing && props.config.jailbreak ?
                 <img className="jailbreak-img" src="img/jailbreak.png" alt="jailbreak"/> : null}
             <div style={{flexGrow: 1, visibility: "hidden"}}/>
-            <Button type="link" icon={<SettingOutlined/>} onClick={() => props.setModalOpen(true)}></Button>
+            <Button
+                type="link" size="large" icon={<SettingOutlined/>}
+                onClick={() => props.setModalOpen(true)}/>
         </div>
     )
 }

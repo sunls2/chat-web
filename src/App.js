@@ -12,6 +12,7 @@ import Title from "./components/Title"
 import Clear from "./components/Clear"
 import Loading from "./components/Loading"
 import {Element, scroller} from "react-scroll"
+import {MessageFilled, StopTwoTone} from "@ant-design/icons"
 
 const Text = Typography
 
@@ -34,7 +35,7 @@ function App() {
 
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
-    const [lastSend, setLastSend] = useState()
+    const [lastSend, setLastSend] = useState(null)
 
     const scrollThrottle = useRef(throttle(scrollToBottom, scrollDuration))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,16 +84,14 @@ function App() {
         return last
     }
 
-    function onSend({resend, e} = {}) {
+    function onSend(resend) {
         if (typing) {
             messageApi.warning("Typing in progress.")
-            e?.preventDefault()
             return
         }
         const inputValue = resend || inputText
         if (!inputValue.trim()) {
             messageApi.warning("There is nothing.")
-            e?.preventDefault()
             return
         }
 
@@ -189,7 +188,7 @@ function App() {
                 return [...chatList.slice(0, -1)]
             })
         }
-        onSend({resend: lastSend})
+        onSend(lastSend)
     }
 
     function onClear() {
@@ -206,21 +205,18 @@ function App() {
     }
 
     function inputChange(e) {
-        if (e.target.value === "\n") {
-            return
-        }
         setInputText(e.target.value)
     }
 
     function onPressEnter(e) {
+        e.preventDefault()
         if (e.shiftKey) {
-            e.preventDefault()
             setInputText(e.target.value + "\n")
             setTimeout(() => e.target.scrollTop = e.target.scrollHeight, 0)
             return
         }
         if (!isComposition) {
-            onSend({e})
+            onSend()
         }
     }
 
@@ -259,23 +255,32 @@ function App() {
                     margin: "0 10px",
                 }}>
                     <Clear {...{onClear}}/>
-                    <Input.Group compact style={{display: "flex"}}>
-                        <Input.TextArea
-                            size="large"
-                            maxLength={2000}
-                            value={inputText}
-                            autoFocus
-                            autoSize={{maxRows: 1}}
-                            onPressEnter={onPressEnter}
-                            onCompositionStart={handleComposition}
-                            onCompositionEnd={handleComposition}
-                            onChange={inputChange}
-                            style={{textAlign: "left"}}
-                            placeholder="Ask me anything. 🙋‍♂️">
-                        </Input.TextArea>
-                        <Button size="large" onClick={onSendClick} type={"primary"}>Send</Button>
-                    </Input.Group>
-                    {typing ? <IconBtn onClick={stopTyping} src="icon/stop.svg" size="20px"/> : null}
+                    <Input.TextArea
+                        size="large"
+                        maxLength={2000}
+                        value={inputText}
+                        autoFocus
+                        autoSize={{maxRows: 2, minRows: 1}}
+                        onPressEnter={onPressEnter}
+                        onCompositionStart={handleComposition}
+                        onCompositionEnd={handleComposition}
+                        onChange={inputChange}
+                        style={{textAlign: "left", flex: 1}}
+                        placeholder="Ask me anything. 🙋‍♂️">
+                    </Input.TextArea>
+
+                    {typing ?
+                        <Button
+                            danger
+                            type="dashed"
+                            shape="round"
+                            icon={<StopTwoTone twoToneColor="red"/>}
+                            onClick={stopTyping}/>
+                        : <Button
+                            shape="round"
+                            style={{flexShrink: 0,}}
+                            onClick={onSendClick} type={"primary"} icon={<MessageFilled/>}/>
+                    }
                 </div>
             ]}
             bodyStyle={{
