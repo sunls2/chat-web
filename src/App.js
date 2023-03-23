@@ -268,11 +268,14 @@ function App() {
                         style={{textAlign: "left", flex: 1}}
                         placeholder="Ask me anything. 🙋‍♂️">
                     </Input.TextArea>
-                    <Button
-                        shape="round"
-                        style={{flexShrink: 0,}}
-                        onClick={onSendClick} type={"primary"} icon={<MessageFilled/>}/>
-                    {typing ? <IconBtn onClick={stopTyping} src="icon/stop.svg" size="20px"/> : null}
+
+                    {typing ?
+                        <IconBtn onClick={stopTyping} src="icon/stop.svg" size="25px"/>
+                        : <Button
+                            shape="round"
+                            style={{flexShrink: 0,}}
+                            onClick={onSendClick} type={"primary"} icon={<MessageFilled/>}/>
+                    }
                 </div>
             ]}
             bodyStyle={{
