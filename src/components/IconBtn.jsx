@@ -1,6 +1,6 @@
 import "./IconBtn.css"
-import React from 'react';
-import {Button} from "antd";
+import React from "react"
+import {Button} from "antd"
 
 function IconBtn(props) {
     const sizeStyle = {width: props.size, height: props.size}
@@ -14,7 +14,7 @@ function IconBtn(props) {
                 style={{...sizeStyle}}
                 src={props.src} alt={props.src}/>}
         />
-    );
+    )
 }
 
-export default React.memo(IconBtn);
+export default React.memo(IconBtn)

@@ -1,18 +1,23 @@
-import "./App.css";
-import React, {useEffect, useRef, useState} from "react";
-import {Button, Card, Input, message, Typography} from "antd";
+import "./App.css"
+import React, {useEffect, useRef, useState} from "react"
+import {Button, Card, Input, message, Typography} from "antd"
 
-import ChatAPI from "./api/ChatAPI";
-import Settings from "./components/Settings";
-import {ConfigKey, HelpEmail, ShopURL, UseBing, UseChatGPT} from "./constant";
-import {merge, throttle} from "lodash";
-import Markdown from "./components/Markdown";
-import IconBtn from "./components/IconBtn";
-import Title from "./components/Title";
-import Clear from "./components/Clear";
-import Loading from "./components/Loading";
+import ChatAPI from "./api/ChatAPI"
+import Settings from "./components/Settings"
+import {ConfigKey, HelpEmail, ShopURL, UseBing, UseChatGPT} from "./constant"
+import {merge, throttle} from "lodash"
+import Markdown from "./components/Markdown"
+import IconBtn from "./components/IconBtn"
+import Title from "./components/Title"
+import Clear from "./components/Clear"
+import Loading from "./components/Loading"
+import {Element, scroller} from "react-scroll"
 
 const Text = Typography
+
+const scrollBottomRef = "scroll-bottom"
+const scrollBodyRef = "scroll-body"
+const scrollDuration = 500
 
 const defaultConfig = {
     clientToUse: UseChatGPT,
@@ -24,18 +29,16 @@ const api = new ChatAPI()
 
 function App() {
     const [messageApi, messageHolder] = message.useMessage()
-    const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))));
+    const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))))
     const [chatList, setChatList] = useState([])
-
-    const bottomRef = useRef(null)
 
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
-    const [lastSend, setLastSend] = useState();
+    const [lastSend, setLastSend] = useState()
 
-    const scrollRef = useRef(throttle(() => bottomRef.current.scrollIntoView({behavior: "smooth"}), 450));
+    const scrollThrottle = useRef(throttle(scrollToBottom, scrollDuration))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(scrollRef.current, [chatList])
+    useEffect(scrollThrottle.current, [chatList])
 
     useEffect(() => {
         console.debug("mount")
@@ -50,6 +53,14 @@ function App() {
             console.debug("save config:", config)
             localStorage.setItem(ConfigKey, JSON.stringify(config))
             return config
+        })
+    }
+
+    function scrollToBottom() {
+        scroller.scrollTo(scrollBottomRef, {
+            duration: scrollDuration,
+            smooth: true,
+            containerId: scrollBodyRef
         })
     }
 
@@ -105,6 +116,7 @@ function App() {
         // loading
         setChatList(chatList => [...chatList, {loading: true}])
         setTyping(true)
+        setTimeout(scrollToBottom, 0)
         api.conversation(inputValue, config, {
             onopen: () => {
                 setChatList(chatList => {
@@ -202,7 +214,7 @@ function App() {
 
     function onPressEnter(e) {
         if (e.shiftKey) {
-            e.preventDefault();
+            e.preventDefault()
             setInputText(e.target.value + "\n")
             setTimeout(() => e.target.scrollTop = e.target.scrollHeight, 0)
             return
@@ -212,7 +224,7 @@ function App() {
         }
     }
 
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false)
 
     function settingsClose() {
         setModalOpen(false)
@@ -268,78 +280,80 @@ function App() {
             ]}
             bodyStyle={{
                 flex: 1,
-                height: 0,
-                display: "flex",
-                flexFlow: "column nowrap",
-                overflowY: "auto",
                 padding: "0 2%",
-
+                overflowY: "auto",
                 borderTop: "3px solid #82E0AA",
             }}
         >
-            {chatList.length === 0 ?
-                <div style={{
-                    flex: "1",
-                    display: "flex",
-                    flexFlow: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "30px",
-                }}>
-                    <img className="empty-img"
-                         src={`img/${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
-                    <Text>{config.clientToUse === UseBing ?
-                        "BingAI aids info search and Q&A."
-                        : "ChatGPT is a large language model trained by OpenAI."}
-                    </Text>
-                </div>
-                : chatList.map((item, i) => {
-                    const style = {
-                        marginTop: "10px",
+            <Element id={scrollBodyRef} style={{
+                height: "100%",
+                display: "flex",
+                flexFlow: "column nowrap",
+                overflowY: "auto",
+            }}>
+                {chatList.length === 0 ?
+                    <div style={{
+                        flex: "1",
                         display: "flex",
-                        gap: "5px",
-                    }
-                    let emoji = "🤖"
-                    if (item.right) {
-                        style.justifyContent = "flex-end"
-                        emoji = "🧐"
-                    }
-
-                    return <div style={style} key={i}>
-                        <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
-                        <Card
-                            style={{
-                                maxWidth: "85%",
-                                width: "fit-content",
-                            }}
-                            bodyStyle={{
-                                padding: "0 10px",
-                            }}
-                        >
-                            {item.loading ?
-                                <Loading/>
-                                : <Markdown success={messageApi.success} content={item.content}/>}
-                        </Card>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            {item.right ? null :
-                                <div className={item.typing ? "gradient-loader" : ""}
-                                     style={{width: "20px", height: "20px", flexShrink: 0}}/>}
-                            {item.resend ?
-                                <IconBtn style={{marginBottom: "2px"}} onClick={resend} src="icon/resend.png"
-                                         size="20px"/> : null}
-                        </div>
-
+                        flexFlow: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "30px",
+                    }}>
+                        <img className="empty-img"
+                             src={`img/${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
+                        <Text>{config.clientToUse === UseBing ?
+                            "BingAI aids info search and Q&A."
+                            : "ChatGPT is a large language model trained by OpenAI."}
+                        </Text>
                     </div>
-                })
-            }
-            <div ref={bottomRef} style={{marginTop: "10px"}}>
-            </div>
+                    : chatList.map((item, i) => {
+                        const style = {
+                            marginTop: "10px",
+                            display: "flex",
+                            gap: "5px",
+                        }
+                        let emoji = "🤖"
+                        if (item.right) {
+                            style.justifyContent = "flex-end"
+                            emoji = "🧐"
+                        }
+
+                        return <div style={style} key={i}>
+                            <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
+                            <Card
+                                style={{
+                                    maxWidth: "85%",
+                                    width: "fit-content",
+                                }}
+                                bodyStyle={{
+                                    padding: "0 10px",
+                                }}
+                            >
+                                {item.loading ?
+                                    <Loading/>
+                                    : <Markdown success={messageApi.success} content={item.content}/>}
+                            </Card>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                {item.right ? null :
+                                    <div className={item.typing ? "gradient-loader" : ""}
+                                         style={{width: "20px", height: "20px", flexShrink: 0}}/>}
+                                {item.resend ?
+                                    <IconBtn style={{marginBottom: "2px"}} onClick={resend} src="icon/resend.png"
+                                             size="20px"/> : null}
+                            </div>
+
+                        </div>
+                    })
+                }
+                <Element name={scrollBottomRef} style={{marginTop: "10px"}}></Element>
+            </Element>
             {messageHolder}
             <Settings open={modalOpen} settingsClose={settingsClose} config={config} updateConfig={updateConfig}/>
         </Card>

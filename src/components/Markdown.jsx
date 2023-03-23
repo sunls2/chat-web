@@ -1,10 +1,10 @@
 import "./Markdown.css"
-import React from 'react';
-import SyntaxHighlighter from "react-syntax-highlighter";
-import {atomOneLight} from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import remarkGfm from "remark-gfm";
-import ReactMarkdown from "react-markdown";
-import IconBtn from "./IconBtn";
+import React from "react"
+import SyntaxHighlighter from "react-syntax-highlighter"
+import {atomOneLight} from "react-syntax-highlighter/dist/cjs/styles/hljs"
+import remarkGfm from "remark-gfm"
+import ReactMarkdown from "react-markdown"
+import IconBtn from "./IconBtn"
 
 function Markdown(props) {
     function copyClick(content) {
@@ -46,7 +46,7 @@ function Markdown(props) {
         className="markdown"
         remarkPlugins={[remarkGfm]}>
         {props.content}
-    </ReactMarkdown>);
+    </ReactMarkdown>)
 }
 
-export default React.memo(Markdown);
+export default React.memo(Markdown)

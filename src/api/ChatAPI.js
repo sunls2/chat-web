@@ -1,5 +1,5 @@
-import {fetchEventSource} from "@microsoft/fetch-event-source";
-import {UseBing, UseChatGPT} from "../constant";
+import {fetchEventSource} from "@microsoft/fetch-event-source"
+import {UseBing, UseChatGPT} from "../constant"
 
 export default class ChatAPI {
     static conversation = "/conversation"
@@ -87,7 +87,7 @@ export default class ChatAPI {
                             if (useBing) {
                                 let urlList = result.details.sourceAttributions
                                 result.response = result.response.replace(/\[\^(.*?)\^]/g, (match, index) => {
-                                    return `[[${index}]](${urlList[index - 1].seeMoreUrl})`;
+                                    return `[[${index}]](${urlList[index - 1].seeMoreUrl})`
                                 })
                             }
                             event.onmessage(result.response, true)

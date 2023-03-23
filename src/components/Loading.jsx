@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 function Loading() {
     return <div style={{"width": "50px", height: "42px", overflow: "hidden"}}>
@@ -8,7 +8,7 @@ function Loading() {
             left: "-50px",
             top: "-35px",
         }}/>
-    </div>;
+    </div>
 }
 
 export default React.memo(Loading)

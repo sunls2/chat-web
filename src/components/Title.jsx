@@ -1,7 +1,7 @@
-import React from 'react';
-import {UseBing, UseMap} from "../constant";
-import {Button, Typography} from "antd";
-import {SettingOutlined} from "@ant-design/icons";
+import React from "react"
+import {UseBing, UseMap} from "../constant"
+import {Button, Typography} from "antd"
+import {SettingOutlined} from "@ant-design/icons"
 
 const Text = Typography
 
@@ -14,7 +14,7 @@ function Title(props) {
             <div style={{flexGrow: 1, visibility: "hidden"}}/>
             <Button type="link" icon={<SettingOutlined/>} onClick={() => props.setModalOpen(true)}></Button>
         </div>
-    );
+    )
 }
 
-export default React.memo(Title);
+export default React.memo(Title)
