@@ -12,7 +12,7 @@ import Title from "./components/Title"
 import Clear from "./components/Clear"
 import Loading from "./components/Loading"
 import {Element, scroller} from "react-scroll"
-import {MessageFilled} from "@ant-design/icons"
+import {MessageFilled, StopTwoTone} from "@ant-design/icons"
 
 const Text = Typography
 
@@ -270,7 +270,12 @@ function App() {
                     </Input.TextArea>
 
                     {typing ?
-                        <IconBtn onClick={stopTyping} src="icon/stop.svg" size="25px"/>
+                        <Button
+                            danger
+                            type="dashed"
+                            shape="round"
+                            icon={<StopTwoTone twoToneColor="red"/>}
+                            onClick={stopTyping}/>
                         : <Button
                             shape="round"
                             style={{flexShrink: 0,}}
