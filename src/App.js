@@ -23,28 +23,19 @@ const defaultConfig = {
 const api = new ChatAPI()
 
 function App() {
+    const [messageApi, messageHolder] = message.useMessage()
     const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))));
     const [chatList, setChatList] = useState([])
 
-    const inputRef = useRef(null)
     const bottomRef = useRef(null)
-
-    const [messageApi, messageHolder] = message.useMessage()
 
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
     const [lastSend, setLastSend] = useState();
 
     const scrollRef = useRef(throttle(() => bottomRef.current.scrollIntoView({behavior: "smooth"}), 450));
-    const [scrollToView, setScrollToView] = useState(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        // didUpdate
-        if (scrollToView) {
-            setScrollToView(false)
-            scrollRef.current()
-        }
-    })
+    useEffect(scrollRef.current, [chatList])
 
     useEffect(() => {
         console.debug("mount")
@@ -87,7 +78,7 @@ function App() {
             e?.preventDefault()
             return
         }
-        const inputValue = resend || inputRef.current.resizableTextArea.textArea.value
+        const inputValue = resend || inputText
         if (!inputValue.trim()) {
             messageApi.warning("There is nothing.")
             e?.preventDefault()
@@ -114,8 +105,6 @@ function App() {
         // loading
         setChatList(chatList => [...chatList, {loading: true}])
         setTyping(true)
-        // TODO: 不知道为什么Input换成TextArea后发送消息就无法立即滚动到最新了，这里先做个延时解决
-        setTimeout(() => setScrollToView(true), 100)
         api.conversation(inputValue, config, {
             onopen: () => {
                 setChatList(chatList => {
@@ -137,7 +126,6 @@ function App() {
                     if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
                         return chatList
                     }
-                    setScrollToView(true)
                     const last = chatList[chatList.length - 1]
                     last.content = message
                     return [...chatList.slice(0, -1), last]
@@ -171,7 +159,6 @@ function App() {
             })
         }).finally(() => {
             console.debug("conversation finally")
-            setScrollToView(true)
             setTyping(false)
         })
     }
@@ -262,7 +249,6 @@ function App() {
                     <Clear {...{onClear}}/>
                     <Input.Group compact style={{display: "flex"}}>
                         <Input.TextArea
-                            ref={inputRef}
                             size="large"
                             maxLength={2000}
                             value={inputText}
