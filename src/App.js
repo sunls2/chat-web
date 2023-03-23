@@ -280,13 +280,16 @@ function App() {
             ]}
             bodyStyle={{
                 flex: 1,
-                padding: "0 2%",
+                padding: 0,
                 overflowY: "auto",
                 borderTop: "3px solid #82E0AA",
             }}
         >
             <Element id={scrollBodyRef} style={{
+                width: "auto",
                 height: "100%",
+                padding: "0 2%",
+
                 display: "flex",
                 flexFlow: "column nowrap",
                 overflowY: "auto",
