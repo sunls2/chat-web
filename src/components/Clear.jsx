@@ -1,6 +1,6 @@
-import React from 'react';
-import {Button, Popconfirm} from "antd";
-import {ClearOutlined} from "@ant-design/icons";
+import React from "react"
+import {Button, Popconfirm} from "antd"
+import {ClearOutlined} from "@ant-design/icons"
 
 function Clear(props) {
     return (
@@ -12,7 +12,7 @@ function Clear(props) {
         >
             <Button shape="round" icon={<ClearOutlined/>}/>
         </Popconfirm>
-    );
+    )
 }
 
-export default React.memo(Clear);
+export default React.memo(Clear)

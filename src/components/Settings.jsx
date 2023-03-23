@@ -1,19 +1,19 @@
-import {Alert, Button, Checkbox, Divider, Input, Modal, Select, Typography} from "antd";
+import {Alert, Button, Checkbox, Divider, Input, Modal, Select, Typography} from "antd"
 import {
     ShopURL,
     UseBing,
     UseBingLabel,
     UseChatGPT, UseChatGPTLabel
-} from "../constant";
-import React, {useRef, useState} from "react";
+} from "../constant"
+import React, {useRef, useState} from "react"
 
 const {Text} = Typography
 
 function Settings(props) {
     const [clientToUse, setClientToUse] = useState(props.config.clientToUse)
-    const [jailbreak, setJailbreak] = useState(props.config.jailbreak);
-    const [apiKey, setApiKey] = useState(props.config.openaiApiKey);
-    const resendRetainRef = useRef(null);
+    const [jailbreak, setJailbreak] = useState(props.config.jailbreak)
+    const [apiKey, setApiKey] = useState(props.config.openaiApiKey)
+    const resendRetainRef = useRef(null)
 
     function resetSettings() {
         setClientToUse(props.config.clientToUse)
@@ -25,7 +25,7 @@ function Settings(props) {
     function onOk() {
         props.updateConfig({
             ...props.config, clientToUse, jailbreak,
-            openaiApiKey: apiKey,
+            openaiApiKey: apiKey.trim(),
             resendRetain: resendRetainRef.current.state.checked,
         })
         props.settingsClose()

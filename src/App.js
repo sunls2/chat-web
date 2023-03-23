@@ -1,18 +1,23 @@
-import "./App.css";
-import React, {useEffect, useRef, useState} from "react";
-import {Button, Card, Input, message, Typography} from "antd";
+import "./App.css"
+import React, {useEffect, useRef, useState} from "react"
+import {Button, Card, Input, message, Typography} from "antd"
 
-import ChatAPI from "./api/ChatAPI";
-import Settings from "./components/Settings";
-import {ConfigKey, ShopURL, UseBing, UseChatGPT} from "./constant";
-import {merge, throttle} from "lodash";
-import Markdown from "./components/Markdown";
-import IconBtn from "./components/IconBtn";
-import Title from "./components/Title";
-import Clear from "./components/Clear";
-import Loading from "./components/Loading";
+import ChatAPI from "./api/ChatAPI"
+import Settings from "./components/Settings"
+import {ConfigKey, HelpEmail, ShopURL, UseBing, UseChatGPT} from "./constant"
+import {merge, throttle} from "lodash"
+import Markdown from "./components/Markdown"
+import IconBtn from "./components/IconBtn"
+import Title from "./components/Title"
+import Clear from "./components/Clear"
+import Loading from "./components/Loading"
+import {Element, scroller} from "react-scroll"
 
 const Text = Typography
+
+const scrollBottomRef = "scroll-bottom"
+const scrollBodyRef = "scroll-body"
+const scrollDuration = 500
 
 const defaultConfig = {
     clientToUse: UseChatGPT,
@@ -23,28 +28,17 @@ const defaultConfig = {
 const api = new ChatAPI()
 
 function App() {
-    const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))));
-    const [chatList, setChatList] = useState([])
-
-    const inputRef = useRef(null)
-    const bottomRef = useRef(null)
-
     const [messageApi, messageHolder] = message.useMessage()
+    const [config, setConfig] = useState(merge(defaultConfig, JSON.parse(localStorage.getItem(ConfigKey))))
+    const [chatList, setChatList] = useState([])
 
     const [inputText, setInputText] = useState("")
     const [typing, setTyping] = useState(false)
-    const [lastSend, setLastSend] = useState();
+    const [lastSend, setLastSend] = useState()
 
-    const scrollRef = useRef(throttle(() => bottomRef.current.scrollIntoView({behavior: "smooth"}), 450));
-    const [scrollToView, setScrollToView] = useState(false)
+    const scrollThrottle = useRef(throttle(scrollToBottom, scrollDuration))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        // didUpdate
-        if (scrollToView) {
-            setScrollToView(false)
-            scrollRef.current()
-        }
-    })
+    useEffect(scrollThrottle.current, [chatList])
 
     useEffect(() => {
         console.debug("mount")
@@ -59,6 +53,14 @@ function App() {
             console.debug("save config:", config)
             localStorage.setItem(ConfigKey, JSON.stringify(config))
             return config
+        })
+    }
+
+    function scrollToBottom() {
+        scroller.scrollTo(scrollBottomRef, {
+            duration: scrollDuration,
+            smooth: true,
+            containerId: scrollBodyRef
         })
     }
 
@@ -81,18 +83,19 @@ function App() {
         return last
     }
 
-    function onSend(resend) {
+    function onSend({resend, e} = {}) {
         if (typing) {
             messageApi.warning("Typing in progress.")
+            e?.preventDefault()
             return
         }
-        const inputValue = resend || inputRef.current.input.value
+        const inputValue = resend || inputText
         if (!inputValue.trim()) {
             messageApi.warning("There is nothing.")
+            e?.preventDefault()
             return
         }
 
-        setScrollToView(true)
         if (!resend) {
             setLastSend(inputValue)
             setInputText("")
@@ -113,6 +116,7 @@ function App() {
         // loading
         setChatList(chatList => [...chatList, {loading: true}])
         setTyping(true)
+        setTimeout(scrollToBottom, 0)
         api.conversation(inputValue, config, {
             onopen: () => {
                 setChatList(chatList => {
@@ -134,7 +138,6 @@ function App() {
                     if (chatList.length === 0 || !chatList[chatList.length - 1].typing) {
                         return chatList
                     }
-                    setScrollToView(true)
                     const last = chatList[chatList.length - 1]
                     last.content = message
                     return [...chatList.slice(0, -1), last]
@@ -160,7 +163,7 @@ function App() {
                     return chatList
                 }
 
-                const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob("YmljZWdvb2xsdXJnQG91dGxvb2suY29t")}\`*`
+                const errText = `❌ 哎呀出错啦！\`${err}\`  \n*请联系邮箱获取帮助：\`${atob(HelpEmail)}\`*`
                 last.content = last.content
                     ? `${last.content}\n\n${errText}`
                     : errText
@@ -168,7 +171,6 @@ function App() {
             })
         }).finally(() => {
             console.debug("conversation finally")
-            setScrollToView(true)
             setTyping(false)
         })
     }
@@ -187,7 +189,7 @@ function App() {
                 return [...chatList.slice(0, -1)]
             })
         }
-        onSend(lastSend)
+        onSend({resend: lastSend})
     }
 
     function onClear() {
@@ -210,13 +212,19 @@ function App() {
         setInputText(e.target.value)
     }
 
-    function onPressEnter() {
+    function onPressEnter(e) {
+        if (e.shiftKey) {
+            e.preventDefault()
+            setInputText(e.target.value + "\n")
+            setTimeout(() => e.target.scrollTop = e.target.scrollHeight, 0)
+            return
+        }
         if (!isComposition) {
-            onSend()
+            onSend({e})
         }
     }
 
-    const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false)
 
     function settingsClose() {
         setModalOpen(false)
@@ -237,10 +245,9 @@ function App() {
                 width: "96vw",
                 maxWidth: "840px",
                 minWidth: "200px",
-                height: "100%",
-                minHeight: "300px",
+                height: "98%",
 
-                margin: "1vh auto",
+                margin: "0 auto",
                 display: "flex",
                 flexDirection: "column",
             }}
@@ -253,19 +260,19 @@ function App() {
                 }}>
                     <Clear {...{onClear}}/>
                     <Input.Group compact style={{display: "flex"}}>
-                        <Input
-                            ref={inputRef}
-                            showCount
+                        <Input.TextArea
                             size="large"
                             maxLength={2000}
                             value={inputText}
+                            autoFocus
+                            autoSize={{maxRows: 1}}
                             onPressEnter={onPressEnter}
                             onCompositionStart={handleComposition}
                             onCompositionEnd={handleComposition}
                             onChange={inputChange}
                             style={{textAlign: "left"}}
                             placeholder="Ask me anything. 🙋‍♂️">
-                        </Input>
+                        </Input.TextArea>
                         <Button size="large" onClick={onSendClick} type={"primary"}>Send</Button>
                     </Input.Group>
                     {typing ? <IconBtn onClick={stopTyping} src="icon/stop.svg" size="20px"/> : null}
@@ -273,78 +280,83 @@ function App() {
             ]}
             bodyStyle={{
                 flex: 1,
-                height: 0,
-                display: "flex",
-                flexFlow: "column nowrap",
+                padding: 0,
                 overflowY: "auto",
-                padding: "0 2%",
-
                 borderTop: "3px solid #82E0AA",
             }}
         >
-            {chatList.length === 0 ?
-                <div style={{
-                    flex: "1",
-                    display: "flex",
-                    flexFlow: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "30px",
-                }}>
-                    <img className="empty-img"
-                         src={`img/${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
-                    <Text>{config.clientToUse === UseBing ?
-                        "BingAI aids info search and Q&A."
-                        : "ChatGPT is a large language model trained by OpenAI."}
-                    </Text>
-                </div>
-                : chatList.map((item, i) => {
-                    const style = {
-                        marginTop: "10px",
+            <Element id={scrollBodyRef} style={{
+                width: "auto",
+                height: "100%",
+                padding: "0 2%",
+
+                display: "flex",
+                flexFlow: "column nowrap",
+                overflowY: "auto",
+            }}>
+                {chatList.length === 0 ?
+                    <div style={{
+                        flex: "1",
                         display: "flex",
-                        gap: "5px",
-                    }
-                    let emoji = "🤖"
-                    if (item.right) {
-                        style.justifyContent = "flex-end"
-                        emoji = "🧐"
-                    }
-
-                    return <div style={style} key={i}>
-                        <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
-                        <Card
-                            style={{
-                                maxWidth: "85%",
-                                width: "fit-content",
-                            }}
-                            bodyStyle={{
-                                padding: "0 10px",
-                            }}
-                        >
-                            {item.loading ?
-                                <Loading/>
-                                : <Markdown success={messageApi.success} content={item.content}/>}
-                        </Card>
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "column",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            {item.right ? null :
-                                <div className={item.typing ? "gradient-loader" : ""}
-                                     style={{width: "20px", height: "20px", flexShrink: 0}}/>}
-                            {item.resend ?
-                                <IconBtn style={{marginBottom: "2px"}} onClick={resend} src="icon/resend.png"
-                                         size="20px"/> : null}
-                        </div>
-
+                        flexFlow: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "30px",
+                    }}>
+                        <img className="empty-img"
+                             src={`img/${config.clientToUse === UseBing ? UseBing : UseChatGPT}.png`} alt="empty"/>
+                        <Text>{config.clientToUse === UseBing ?
+                            "BingAI aids info search and Q&A."
+                            : "ChatGPT is a large language model trained by OpenAI."}
+                        </Text>
                     </div>
-                })
-            }
-            <div ref={bottomRef} style={{marginTop: "10px"}}>
-            </div>
+                    : chatList.map((item, i) => {
+                        const style = {
+                            marginTop: "10px",
+                            display: "flex",
+                            gap: "5px",
+                        }
+                        let emoji = "🤖"
+                        if (item.right) {
+                            style.justifyContent = "flex-end"
+                            emoji = "🧐"
+                        }
+
+                        return <div style={style} key={i}>
+                            <span style={{fontSize: "22px", marginTop: "-5px"}}>{emoji}</span>
+                            <Card
+                                style={{
+                                    maxWidth: "85%",
+                                    width: "fit-content",
+                                }}
+                                bodyStyle={{
+                                    padding: "0 10px",
+                                }}
+                            >
+                                {item.loading ?
+                                    <Loading/>
+                                    : <Markdown success={messageApi.success} content={item.content}/>}
+                            </Card>
+                            <div
+                                style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                {item.right ? null :
+                                    <div className={item.typing ? "gradient-loader" : ""}
+                                         style={{width: "20px", height: "20px", flexShrink: 0}}/>}
+                                {item.resend ?
+                                    <IconBtn style={{marginBottom: "2px"}} onClick={resend} src="icon/resend.png"
+                                             size="20px"/> : null}
+                            </div>
+
+                        </div>
+                    })
+                }
+                <Element name={scrollBottomRef} style={{marginTop: "10px"}}></Element>
+            </Element>
             {messageHolder}
             <Settings open={modalOpen} settingsClose={settingsClose} config={config} updateConfig={updateConfig}/>
         </Card>
