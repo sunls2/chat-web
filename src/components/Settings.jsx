@@ -3,7 +3,7 @@ import {
     ShopURL,
     UseBing,
     UseBingLabel,
-    UseChatGPT, UseChatGPTLabel
+    UseChatGPT, UseChatGPTBrowser, UseChatGPTBrowserLabel, UseChatGPTLabel
 } from "../constant"
 import React, {useRef, useState} from "react"
 
@@ -68,8 +68,8 @@ function Settings(props) {
                     onChange={selectChange}
                     options={[
                         {value: UseChatGPT, label: UseChatGPTLabel},
-                        // {value: UseChatGPTBrowser, label: UseChatGPTBrowserLabel},
-                        {value: UseBing, label: UseBingLabel},
+                        {value: UseChatGPTBrowser, label: UseChatGPTBrowserLabel, disabled: true},
+                        {value: UseBing, label: UseBingLabel, disabled: true},
                     ]}
                 />
                 {clientToUse === UseBing ?
