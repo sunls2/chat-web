@@ -41,6 +41,7 @@ export default class ChatAPI {
                     clientToUse: config.clientToUse,
                     ...(customKey && {openaiApiKey: config.openaiApiKey}),
                     ...(useChatGPT && {modelOptions: {max_tokens: config.openaiApiKey ? ChatAPI.maxTokens : ChatAPI.limitTokens}}),
+                    ...(useBing && config.userToken && {userToken: config.userToken}),
                 }
             }),
         }

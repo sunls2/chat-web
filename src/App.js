@@ -25,6 +25,8 @@ const defaultConfig = {
     jailbreak: false,
     openaiApiKey: "",
     resendRetain: false,
+    // BingAI
+    userToken: "",
 }
 const api = new ChatAPI()
 
